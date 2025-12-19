@@ -13,21 +13,43 @@ const isAdmin = () => {
   const router = createRouter({
     history: createWebHistory(),
     routes: [
-      { path: "/", component: HomeView },
-      { path: "/login", component: LoginView },
-      {path: "/register",name: "register",component: RegisterView},      
+      {
+        path: "/",
+        name: "home",
+        component: HomeView,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "/login",
+        component: LoginView
+      },
+      {
+        path: "/register",
+        component: RegisterView
+      },
       {
         path: "/admin",
-        component: () => import("../views/AdminView.vue"),
-        beforeEnter: () => {
-          const user = JSON.parse(localStorage.getItem("user"))
-          if (!user || user.role !== "admin") {
-            return "/login"
-          }
-        }
+        component: AdminView,
+        meta: { requiresAuth: true, adminOnly: true }
       }
-      
     ]
+  })
+ 
+  router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem("token")
+    const user = JSON.parse(localStorage.getItem("user"))
+  
+    // 🔒 moet ingelogd zijn
+    if (to.meta.requiresAuth && !token) {
+      return next("/login")
+    }
+  
+    // 🔒 admin-only
+    if (to.meta.adminOnly && user?.role !== "admin") {
+      return next("/")
+    }
+  
+    next()
   })
   
 

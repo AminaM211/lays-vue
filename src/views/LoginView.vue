@@ -86,18 +86,15 @@
     }
     .login-page {
       min-height: 100vh;
-      background: #f0f2f5;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     
     .login-card {
-      background: white;
       padding: 32px;
       width: 360px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       gap: 14px;
