@@ -1,13 +1,9 @@
-<script setup>
-
-</script>
-
 <template>
-  <div>
-    <h1>App.vue</h1>
-  </div>
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/login">Login</router-link> |
+    <router-link to="/admin">Admin</router-link>
+  </nav>
+
+  <router-view />
 </template>
-
-<style scoped>
-
-</style>
