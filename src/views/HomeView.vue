@@ -1,25 +1,25 @@
 <template>
     <nav>
-        <router-link to="/">Home</router-link>
-        <button @click="logout">Uitloggen</button>
+      <router-link to="/">Home</router-link>
+      <button @click="logout">Uitloggen</button>
     </nav>
   
     <div class="profile">
-  
       <!-- USER INFO -->
       <section class="card">
         <h2>Mijn profiel</h2>
-        <p><strong>Naam:</strong> {{ user.name }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Naam:</strong> {{ user?.name }}</p>
+        <p><strong>Email:</strong> {{ user?.email }}</p>
       </section>
   
       <!-- MY DESIGNS -->
-      <section class="card" >
+      <section class="card">
         <h2>Mijn designs</h2>
+  
         <p v-if="myBags.length === 0">
-        <button class="cta" @click="goToConfigurator">
+          <button class="cta" @click="goToConfigurator">
             Design je eigen chipszak!
-        </button>
+          </button>
         </p>
   
         <div class="grid">
@@ -43,18 +43,16 @@
           </div>
         </div>
       </section>
-  
     </div>
   </template>
   
   <script>
-  const API = "http://localhost:4000/api/v1"
-  
+  const API_URL = "http://localhost:4000/api/v1"
+const url = `${API_URL}/bag`
   export default {
     data() {
       return {
         user: JSON.parse(localStorage.getItem("user")),
-        token: localStorage.getItem("token"),
         myBags: [],
         allBags: []
       }
@@ -67,38 +65,64 @@
   
     methods: {
       async fetchMyBags() {
-        const res = await fetch(`${API}/bag/mine`, {
-          headers: {
-            Authorization: `Bearer ${this.token}`
-          }
-        })
-        this.myBags = await res.json()
-      },
+  const res = await fetch(`${API_URL}/bag/mine`, {
+    method: "GET",
+    credentials: "include"
+  })
+
+  if (!res.ok) {
+    console.error("fetchMyBags failed:", res.status)
+    return
+  }
+
+  this.myBags = await res.json()
+}
+,
   
-      async fetchAllBags() {
-        const res = await fetch(`${API}/bag`)
-        this.allBags = await res.json()
-      },
+async fetchAllBags() {
+  const res = await fetch(`${API_URL}/bag`, {
+    method: "GET",
+    credentials: "include"
+  })
+
+  if (!res.ok) {
+    console.error("fetchAllBags failed:", res.status)
+    return
+  }
+
+  this.allBags = await res.json()
+}
+,
   
       async vote(bagId) {
-        await fetch(`${API}/vote/${bagId}`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${this.token}`
-          }
-        })
+        const res = await fetch(url, {
+            method: "POST",
+            credentials: "include", // ⬅️ VERPLICHT
+            headers: {
+                "Content-Type": "application/json"
+            }
+            })
+
+  
+        if (!res.ok) {
+          alert("Stemmen mislukt")
+          return
+        }
+  
         alert("Gestemd!")
       },
-        logout() {
-            localStorage.removeItem("token")
-            localStorage.removeItem("user")
-            this.$router.push("/login")
-  },
-  goToConfigurator() {
-    window.location.href = "http://localhost:5174/" 
-  }
-}}
+  
+      logout() {
+        localStorage.removeItem("user")
+        this.$router.push("/login")
+      },
+  
+      goToConfigurator() {
+        window.location.href = "http://localhost:5174/"
+}
 
+    }
+  }
   </script>
   
   <style scoped>
@@ -109,11 +133,8 @@
   }
   
   .card {
-    /* background: linear-gradient(145deg, #1f1f1f, #141414);
-    border-radius: 20px; */
     padding: 10px;
     margin-bottom: 20px;
-    /* box-shadow: 0 20px 40px rgba(0,0,0,0.6); */
   }
   
   h2 {
@@ -156,20 +177,22 @@
     font-weight: bold;
     cursor: pointer;
   }
-
+  
   nav {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  font-family: Arial, Helvetica, sans-serif;
-}
-nav a {
-  margin-right: 15px;
-  text-decoration: none;
-  color: black;
-}
-nav a.router-link-exact-active {
-  font-weight: bold;
-}
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  nav a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: black;
+  }
+  
+  nav a.router-link-exact-active {
+    font-weight: bold;
+  }
   </style>
   

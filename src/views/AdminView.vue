@@ -21,6 +21,8 @@
 </template>
 
 <script>
+    const API_URL = "http://localhost:4000/api/v1"
+    const url = `${API_URL}/bag`
 export default {
   data() {
     return {
@@ -28,13 +30,13 @@ export default {
     }
   },
   async mounted() {
-    const token = localStorage.getItem("token")
+  const res = await fetch(url, {
+  method: "POST",
+  credentials: "include", // ⬅️ VERPLICHT
+  headers: {
+    "Content-Type": "application/json"
+  },})
 
-    const res = await fetch("http://localhost:4000/api/v1/bag", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
 
     const data = await res.json()
     this.bags = data

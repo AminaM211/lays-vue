@@ -29,7 +29,8 @@
   </template>
   
   <script>
-    const API_URL = "http://localhost:4000/api/v1"
+  const API_URL = "http://localhost:4000/api/v1"
+    const url = `${API_URL}/user/login`
 
   export default {
     data() {
@@ -41,12 +42,13 @@
     methods: {
         async login() {
   try {
-    const res = await fetch("http://localhost:4000/api/v1/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+    const res = await fetch(url, {
+  method: "POST",
+  credentials: "include", // ⬅️ VERPLICHT
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
         email: this.email,
         password: this.password
       })
@@ -59,7 +61,6 @@
       return
     }
 
-    localStorage.setItem("token", data.token)
     localStorage.setItem("user", JSON.stringify(data.user))
 
     if (data.user.role === "admin") {

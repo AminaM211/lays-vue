@@ -36,7 +36,8 @@
   
   <script>
   const API_URL = "http://localhost:4000/api/v1"
-  
+  const url = `${API_URL}/user/register`
+
   export default {
     data() {
       return {
@@ -48,11 +49,11 @@
     methods: {
       async register() {
         try {
-          const res = await fetch(`${API_URL}/user/register`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
+          const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
             body: JSON.stringify({
               name: this.name,
               email: this.email,
@@ -68,7 +69,7 @@
           }
   
           alert("Account aangemaakt!")
-          this.$router.push("/")
+          this.$router.push("/login")
   
         } catch (err) {
           console.error(err)

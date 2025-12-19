@@ -35,22 +35,17 @@ const isAdmin = () => {
     ]
   })
  
-  router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem("token")
-    const user = JSON.parse(localStorage.getItem("user"))
+  router.beforeEach(async (to, from, next) => {
+    if (to.path === "/login") return next()
   
-    // 🔒 moet ingelogd zijn
-    if (to.meta.requiresAuth && !token) {
-      return next("/login")
-    }
+    const res = await fetch("http://localhost:4000/api/v1/bag/mine", {
+      credentials: "include"
+    })
   
-    // 🔒 admin-only
-    if (to.meta.adminOnly && user?.role !== "admin") {
-      return next("/")
-    }
-  
-    next()
+    if (res.ok) next()
+    else next("/login")
   })
+  
   
 
 export default router
