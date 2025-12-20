@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <p>Welcome back {{ user?.name }}!</p>
+    <p>Admin panel</p>
     <button @click="logout">Uitloggen</button>
   </nav>
 
@@ -18,7 +18,7 @@
           </div>
 
           <p class="made-by">Made by user</p>
-          <button class="trash" @click="delete(bag._id)">
+          <button class="trash" @click="deleteBag(bag._id)">
             <img src="../assets/trash-2.svg" alt="">
           </button>
         </div>
@@ -58,24 +58,23 @@ this.allBags = await res.json()
 }
 ,
 
+async deleteBag(bagId) {
+  const res = await fetch(`${url}/${bagId}`, {
+    method: "DELETE",
+    credentials: "include"
+  })
 
-          async delete(bagId) {
-      const res = await fetch(`${url}/${bagId}`, {
-          method: "DELETE",
-          credentials: "include", // ⬅️ VERPLICHT
-          headers: {
-              "Content-Type": "application/json"
-          }
-          })
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "")
+    console.error("DELETE failed:", res.status, txt)
+    alert("Delete mislukt")
+    return
+  }
 
-
-      if (!res.ok) {
-        alert("Stemmen mislukt")
-        return
-      }
-
-      alert("Gestemd!")
-    },
+  // ✅ meteen UI updaten
+  this.allBags = this.allBags.filter(b => b._id !== bagId)
+}
+,
 
     logout() {
       localStorage.removeItem("user")
@@ -149,6 +148,7 @@ h2 {
   height: 40px;
   position: absolute;
   right: 15px;
+  z-index: 999999;
 }
 
 .trash img {
@@ -201,6 +201,7 @@ h2 {
   height: 260px;
   border: none;
   background: transparent;
+  pointer-events: none;
 }
 
 /* tekst blijft onder */
