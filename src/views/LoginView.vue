@@ -69,6 +69,13 @@
       this.$router.push("/")
     }
 
+    // Admin cannot access the home page
+    if (data.user.role !== "admin" && this.$route.path === "/admin") {
+      alert("Unauthorized access");
+      this.$router.push("/");
+    }
+
+
 
   } catch (err) {
     console.error(err)

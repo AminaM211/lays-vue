@@ -1,33 +1,30 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link>
+    <p>Welcome back {{ user?.name }}!</p>
     <button @click="logout">Uitloggen</button>
   </nav>
 
-  <div class="profile">
-    <!-- USER INFO -->
-    <section class="card">
-      <h2>Mijn profiel</h2>
-      <p><strong>Naam:</strong> {{ user?.name }}</p>
-      <p><strong>Email:</strong> {{ user?.email }}</p>
-    </section>
-
-    <!-- ALL DESIGNS -->
     <section class="card">
       <h2>Alle designs</h2>
 
+      <div class="scroll">
       <div class="carousel">
         <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
-          <iframe
-            :src="`http://localhost:5173/?preview=true&bagId=${bag._id}`"
-            class="bag-preview"
-          />
-          <small>door {{ bag.user?.name || "user" }}</small>
-          <button @click="delete(bag._id)">Delete</button>
+          <div class="bag-float">
+            <iframe
+              :src="`http://localhost:5173/?preview=true&bagId=${bag._id}`"
+              class="bag-preview"
+            />
+          </div>
+
+          <p class="made-by">Made by user</p>
+          <button class="trash" @click="delete(bag._id)">
+            <img src="../assets/trash-2.svg" alt="">
+          </button>
         </div>
       </div>
+    </div>
     </section>
-  </div>
 </template>
 
 <script>
@@ -37,32 +34,15 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      myBags: [],
       allBags: []
     }
   },
 
   async mounted() {
-    await this.fetchMyBags()
     await this.fetchAllBags()
   },
 
   methods: {
-    async fetchMyBags() {
-const res = await fetch(`${API_URL}/bag/mine`, {
-  method: "GET",
-  credentials: "include"
-})
-
-if (!res.ok) {
-  console.error("fetchMyBags failed:", res.status)
-  return
-}
-
-this.myBags = await res.json()
-}
-,
-
 async fetchAllBags() {
 const res = await fetch(`${API_URL}/bag`, {
   method: "GET",
@@ -139,19 +119,21 @@ return {
 </script>
 
 <style scoped>
-.profile {
+.card {
   min-height: 100vh;
   padding: 40px;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-.card {
   padding: 10px;
   margin-bottom: 20px;
 }
 
+.scroll {
+    overflow-x: scroll;
+    padding-top: 50px;
+}
+
 h2 {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   font-size: 22px;
   color: #ff0000;
 }
@@ -162,23 +144,81 @@ h2 {
   gap: 20px;
 }
 
+.trash {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  right: 15px;
+}
+
+.trash img {
+  width: 100%;
+  height: 20px !important;
+}
+
 .carousel {
   display: flex;
   gap: 20px;
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .bag-card {
   border-radius: 16px;
-  padding: 16px;
+  padding: 10px;
   text-align: center;
-  min-width: 180px;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: visible;
 }
+
+.bag-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: visible; 
+
+}
+
+.bag-float {
+  position: absolute;
+  top: -40px; 
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  pointer-events: none;
+  
+}
+
+.bag-card:hover .bag-float {
+  top: -60px;
+  transition: top 0.3s ease;
+}
+
+/* iframe zelf */
+.bag-preview {
+  width: 180px;
+  height: 260px;
+  border: none;
+  background: transparent;
+}
+
+/* tekst blijft onder */
+.made-by {
+  margin-top: 220px;
+  color: white;
+  font-weight: bold;
+}
+
 
 .bag-card img {
   width: 100%;
   height: 160px;
   object-fit: contain;
+}
+
+.carousel p {
+  color: white;
 }
 
 
@@ -194,12 +234,13 @@ button {
 nav {
   padding: 10px;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   font-family: Arial, Helvetica, sans-serif;
+  border-bottom: gray 1px solid;
 }
 
-nav a {
-  margin-right: 15px;
+nav button {
+  padding: 0px 20px;
   text-decoration: none;
   color: black;
 }
@@ -208,10 +249,4 @@ nav a.router-link-exact-active {
   font-weight: bold;
 }
 
-.bag-preview {
-  width: 100%;
-  height: 250px;
-  border: none;
-  background: transparent;
-}
 </style>
