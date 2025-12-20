@@ -15,17 +15,19 @@
       <!-- MY DESIGNS -->
       <section class="card">
         <h2>Mijn designs</h2>
-  
-        <p v-if="myBags.length === 0">
+
+        <p v-if="myBags.length < 10">
           <button class="cta" @click="goToConfigurator">
             Design je eigen chipszak!
           </button>
         </p>
   
-        <div class="grid">
-          <div class="bag-card" v-for="bag in myBags" :key="bag._id">
-            <img :src="bag.image" />
-            <p>{{ bag.name }}</p>
+        <div class="carousel">
+          <div class="bag-card" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
+            <iframe
+              :src="`http://localhost:5173/?preview=true&bagId=${bag._id}`"
+              class="bag-preview"
+            />
           </div>
         </div>
       </section>
@@ -35,9 +37,11 @@
         <h2>Alle designs</h2>
   
         <div class="carousel">
-          <div class="bag-card" v-for="bag in allBags" :key="bag._id">
-            <img :src="bag.image" />
-            <p>{{ bag.name }}</p>
+          <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
+            <iframe
+              :src="`http://localhost:5173/?preview=true&bagId=${bag._id}`"
+              class="bag-preview"
+            />
             <small>door {{ bag.user?.name || "user" }}</small>
             <button @click="vote(bag._id)">Vote</button>
           </div>
@@ -48,7 +52,7 @@
   
   <script>
   const API_URL = "http://localhost:4000/api/v1"
-const url = `${API_URL}/bag`
+  const url = `${API_URL}/bag`
   export default {
     data() {
       return {
@@ -118,8 +122,36 @@ async fetchAllBags() {
       },
   
       goToConfigurator() {
-        window.location.href = "http://localhost:5174/"
+        window.location.href = "http://localhost:5173/"
+},
+getBagBackground(bag) {
+  // 1. custom background image (base64 of url)
+  if (bag.backgroundImage) {
+    return {
+      backgroundImage: `url(${bag.backgroundImage})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center"
+    }
+  }
+
+  // 2. preset background (blue, red, green, ...)
+  if (bag.backgroundPreset) {
+    return {
+      backgroundImage: `url(${new URL(
+        `/src/assets/${bag.backgroundPreset}-bg.png`,
+        import.meta.url
+      ).href})`,      backgroundSize: "cover",
+      backgroundPosition: "center"
+    }
+  }
+
+  // 3. fallback kleur
+  return {
+    backgroundColor: bag.backgroundColor || "#05060a"
+  }
 }
+
+
 
     }
   }
@@ -156,7 +188,6 @@ async fetchAllBags() {
   }
   
   .bag-card {
-    background: #111;
     border-radius: 16px;
     padding: 16px;
     text-align: center;
@@ -168,6 +199,7 @@ async fetchAllBags() {
     height: 160px;
     object-fit: contain;
   }
+  
   
   button {
     background: linear-gradient(135deg, #ffcc00, #ff9900);
@@ -193,6 +225,13 @@ async fetchAllBags() {
   
   nav a.router-link-exact-active {
     font-weight: bold;
+  }
+
+  .bag-preview {
+    width: 100%;
+    height: 250px;
+    border: none;
+    background: transparent;
   }
   </style>
   
