@@ -86,6 +86,11 @@ export default {
   },
 
   async mounted() {
+    if (!this.user) {
+    this.$router.push("/login")
+    return
+  }
+
     await this.fetchMyBags()
     await this.fetchAllBags()
   },
@@ -95,6 +100,10 @@ export default {
       const res = await fetch(`${API_URL}/api/v1/bag/mine`, {
         credentials: "include"
       })
+      if (res.status === 401) {
+    this.logout()
+    return
+  }
       if (res.ok) this.myBags = await res.json()
     },
 

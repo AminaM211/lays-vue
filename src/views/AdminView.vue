@@ -47,7 +47,7 @@ export default {
 
   methods: {
 async fetchAllBags() {
-const res = await fetch(`${API_URL}/api/v1/bag`, {
+const res = await fetch(url, {
   method: "GET",
   credentials: "include"
 })
