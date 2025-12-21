@@ -29,8 +29,7 @@
   </template>
   
   <script>
-  const API_URL = import.meta.env.VITE_API_URL
-    const url = `${API_URL}/user/login`
+  const API_URL = import.meta.env.VITE_API_BASE_URL
 
   export default {
     data() {
@@ -42,17 +41,17 @@
     methods: {
         async login() {
   try {
-    const res = await fetch(url, {
-  method: "POST",
-  credentials: "include", // ⬅️ VERPLICHT
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-        email: this.email,
-        password: this.password
+    const res = await fetch(`${API_URL}/user/login`, {
+    method: "POST",
+    credentials: "include", 
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+          email: this.email,
+          password: this.password
+        })
       })
-    })
 
     const data = await res.json()
 
