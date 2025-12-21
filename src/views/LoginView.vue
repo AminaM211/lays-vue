@@ -22,7 +22,9 @@
   
         <div class="flex">
             <p>Nog geen account?</p>
-            <router-link class="secondary" to="/register">Account maken</router-link>
+            <router-link to="/register" class="secondary">
+              Account maken
+            </router-link>
         </div>
       </div>
     </div>
