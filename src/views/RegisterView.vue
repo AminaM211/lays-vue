@@ -36,7 +36,7 @@
   
   <script>
   const API_URL = import.meta.env.VITE_API_BASE_URL
-  const url = `${API_URL}/user/register`
+  const url = `${API_URL}/api/v1/user/register`
 
   export default {
     data() {

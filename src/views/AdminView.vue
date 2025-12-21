@@ -32,7 +32,7 @@
 
 <script>
 const API_URL = import.meta.env.VITE_API_BASE_URL
-const url = `${API_URL}/bag`
+const url = `${API_URL}/api/v1/bag`
 export default {
   data() {
     return {
@@ -47,7 +47,7 @@ export default {
 
   methods: {
 async fetchAllBags() {
-const res = await fetch(`${API_URL}/bag`, {
+const res = await fetch(`${API_URL}/api/v1/bag`, {
   method: "GET",
   credentials: "include"
 })

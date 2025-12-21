@@ -92,14 +92,14 @@ export default {
 
   methods: {
     async fetchMyBags() {
-      const res = await fetch(`${API_URL}/bag/mine`, {
+      const res = await fetch(`${API_URL}/api/v1/bag/mine`, {
         credentials: "include"
       })
       if (res.ok) this.myBags = await res.json()
     },
 
     async fetchAllBags() {
-      const res = await fetch(`${API_URL}/bag`, {
+      const res = await fetch(`${API_URL}/api/v1/bag`, {
         credentials: "include"
       })
       if (!res.ok) return
@@ -117,7 +117,7 @@ export default {
       const bag = this.allBags.find(b => b._id === bagId)
       if (!bag) return
 
-      const res = await fetch(`${API_URL}/vote/${bagId}`, {
+      const res = await fetch(`${API_URL}/api/v1/vote/${bagId}`, {
         method: bag.hasVoted ? "DELETE" : "POST",
         credentials: "include"
       })
@@ -132,7 +132,7 @@ export default {
     },
 
     async deleteBag(bagId) {
-      const res = await fetch(`${API_URL}/bag/${bagId}`, {
+      const res = await fetch(`${API_URL}/api/v1/bag/${bagId}`, {
         method: "DELETE",
         credentials: "include"
       })

@@ -40,7 +40,7 @@ const isAdmin = () => {
   router.beforeEach(async (to, from, next) => {
     if (to.path === "/login") return next()
   
-    const res = await fetch(`${API_URL}/bag/mine`, {
+    const res = await fetch(`${API_URL}/api/v1/bag/mine`, {
       credentials: "include"
     })
   
