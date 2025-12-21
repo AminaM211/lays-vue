@@ -67,8 +67,6 @@
             alert(data.message)
             return
           }
-  
-          alert("Account aangemaakt!")
           this.$router.push("/login")
   
         } catch (err) {

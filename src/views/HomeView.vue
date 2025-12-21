@@ -3,50 +3,72 @@
       <router-link to="/">Home</router-link>
       <button @click="logout">Uitloggen</button>
     </nav>
-  
-    <div class="profile">
-      <!-- USER INFO -->
-      <section class="card">
-        <h2>Mijn profiel</h2>
-        <p><strong>Naam:</strong> {{ user?.name }}</p>
-        <p><strong>Email:</strong> {{ user?.email }}</p>
-      </section>
-  
+    <div class="body">
       <!-- MY DESIGNS -->
       <section class="card">
-        <h2>Mijn designs</h2>
+        <div class="flex2">
+            <h2>My designs</h2>
 
-        <p v-if="myBags.length < 10">
+          <p v-if="myBags.length < 5 && myBags.length > 0">
+            <!-- <p v-if="myBags.length < 5 "> -->
+            <button class="cta" @click="goToConfigurator">
+              Design je eigen chipszak!
+            </button>
+          </p>
+        </div>
+         <p class="text">You can create up to 5 designs!</p>
+         <div v-if="myBags.length === 0">
           <button class="cta" @click="goToConfigurator">
-            Design je eigen chipszak!
-          </button>
-        </p>
-  
-        <div class="carousel">
-          <div class="bag-card" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
+              Design je eigen chipszak!
+            </button>
+          </div>
+
+        <div v-if="myBags.length > 0">
+        <div class="scroll">
+      <div class="carousel">
+        <div class="bag-card" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
+          <div class="bag-float">
             <iframe
               :src="`http://localhost:5173/?preview=true&bagId=${bag._id}`"
               class="bag-preview"
             />
           </div>
+          <button class="trash" @click="deleteBag(bag._id)">
+            <img src="../assets/trash-2.svg" alt="">
+          </button>
+        </div>
+      </div>
+    </div>
         </div>
       </section>
   
       <!-- ALL DESIGNS -->
       <section class="card">
-        <h2>Alle designs</h2>
-  
-        <div class="carousel">
-          <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
+        <h2 class="tweedetitel">Alle designs</h2>
+        <p class="text" style="margin-top: 10px">You can like up to 3 designs!</p>
+
+        <div class="scroll">
+      <div class="carousel">
+        <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
+          <div class="bag-float">
             <iframe
               :src="`http://localhost:5173/?preview=true&bagId=${bag._id}`"
               class="bag-preview"
             />
-            <small>door {{ bag.user?.name || "user" }}</small>
-            <button @click="vote(bag._id)">Vote</button>
+            </div>
+
+            <div class="madeby">
+                <p>Made by {{ bag.user?.name || 'Unknown' }}</p>
+              <div class="madeflex">
+                <span>{{ bag.votes || 0 }} 👍</span>
+                <button class="vote" @click="vote(bag._id)">vote</button>
+              </div>
+            </div>
           </div>
-        </div>
+      </div>
+    </div>
       </section>
+      <p class="copyright">Lays 2025 - Design your Lays</p>
     </div>
   </template>
   
@@ -66,7 +88,6 @@
       await this.fetchMyBags()
       await this.fetchAllBags()
     },
-  
     methods: {
       async fetchMyBags() {
   const res = await fetch(`${API_URL}/bag/mine`, {
@@ -80,6 +101,23 @@
   }
 
   this.myBags = await res.json()
+},
+async deleteBag(bagId) {
+  const res = await fetch(`${API_URL}/bag/${bagId}`, {
+    method: "DELETE",
+    credentials: "include"
+  })
+
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "")
+    console.error("DELETE failed:", res.status, txt)
+    alert("Delete mislukt")
+    return
+  }
+
+  // ✅ meteen UI updaten
+  this.myBags = this.myBags.filter(b => b._id !== bagId)
+  this.allBags = this.allBags.filter(b => b._id !== bagId)
 }
 ,
   
@@ -99,22 +137,23 @@ async fetchAllBags() {
 ,
   
       async vote(bagId) {
-        const res = await fetch(url, {
-            method: "POST",
-            credentials: "include", // ⬅️ VERPLICHT
-            headers: {
-                "Content-Type": "application/json"
-            }
-            })
+        const bag = this.allBags.find(b => b._id === bagId)
+        if (!bag) return
 
-  
+        const res = await fetch(`http://localhost:4000/api/v1/vote/${bagId}`, {
+          method: bag.hasVoted ? "DELETE" : "POST",
+          credentials: "include"
+        })
+
         if (!res.ok) {
-          alert("Stemmen mislukt")
+          alert(bag.hasVoted ? "Stem verwijderen mislukt" : "Je hebt al gestemd")
           return
         }
-  
-        alert("Gestemd!")
-      },
+
+        bag.votes += bag.hasVoted ? -1 : 1
+        bag.hasVoted = !bag.hasVoted
+      }
+      ,
   
       logout() {
         localStorage.removeItem("user")
@@ -158,80 +197,233 @@ getBagBackground(bag) {
   </script>
   
   <style scoped>
-  .profile {
-    min-height: 100vh;
-    padding: 40px;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  
-  .card {
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-  
-  h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-    color: #ff0000;
-  }
-  
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-  }
-  
-  .carousel {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-  }
-  
-  .bag-card {
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-    min-width: 180px;
-  }
-  
-  .bag-card img {
-    width: 100%;
-    height: 160px;
-    object-fit: contain;
-  }
-  
-  
-  button {
-    background: linear-gradient(135deg, #ffcc00, #ff9900);
-    border: none;
-    padding: 10px;
-    border-radius: 999px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  nav {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  
-  nav a {
-    margin-right: 15px;
-    text-decoration: none;
-    color: black;
-  }
-  
-  nav a.router-link-exact-active {
-    font-weight: bold;
-  }
+    .card {
+      /* min-height: 100vh; */
+      padding: 40px;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 10px;
+      /* margin-bottom: 20px; */
+    }
 
-  .bag-preview {
-    width: 100%;
-    height: 250px;
-    border: none;
-    background: transparent;
-  }
-  </style>
-  
+    router-link {
+      text-decoration: none;
+      color: black;
+    }
+    
+    .scroll {
+        overflow-x: scroll;
+        padding-top: 50px;
+    }
+    
+    h2 {
+      margin: 0px;
+      font-size: 22px;
+      color: #d50e0e;
+    }
+
+    .copyright {
+      text-align: center;
+      color: rgb(160, 160, 160);
+      margin-top: 25vh;
+      padding-bottom: 10px;
+      font-size: 12px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .tweedetitel {
+      padding-top: 20px;
+    }
+
+    .madeby {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      flex-direction: column;
+    }
+
+    .madeflex {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+    }
+    
+    .trash {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      right: 15px;
+      z-index: 999999;
+      background: linear-gradient(135deg, #ffcc00, #ff9900);
+      border: none;
+      color: white;
+      padding-top: 5px;
+      border-radius: 999px;
+    }
+
+    .cta {
+      background: linear-gradient(135deg, #ffcc00, #ff9900);
+      border: none;
+      padding: 12px 18px;
+      color: white;
+      border-radius: 999px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .cta:hover {
+      background: linear-gradient(135deg, #ffdd33, #ffbb00);
+    }
+
+    
+    .trash img {
+      width: 100%;
+      height: 20px !important;
+    }
+    
+    .carousel {
+      display: flex;
+      gap: 20px;
+      overflow: visible;
+    }
+    
+    .bag-card {
+      border-radius: 16px;
+      padding: 10px;
+      text-align: center;
+      min-width: 250px;
+      height: 240px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: visible;
+    }
+
+    .body {
+      background-image: url('../assets/background.png');
+      background-size: cover;
+      background-repeat: repeat;  
+      border-radius: 20px;  
+      margin: 0;
+    }
+    
+    .bag-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: visible; 
+    }
+    
+    .bag-float {
+      position: absolute;
+      top: -50px; 
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      pointer-events: none;
+      
+    }
+    
+    .bag-card:hover .bag-float {
+      top: -70px;
+      transition: top 0.3s ease;
+    }
+    
+    /* iframe zelf */
+    .bag-preview {
+      width: 180px;
+      height: 260px;
+      border: none;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .flex2 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .text {
+      font-size: 14px;
+      color: gray;
+      margin-bottom: 20px;
+    }
+    
+    /* tekst blijft onder */
+    .madeby {
+      margin-top: 170px;
+      color: white;
+      font-weight: bold;
+      gap: 0;
+    }
+
+    .madeby p {
+      margin-bottom: 10px;
+    }
+    
+    
+    .bag-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: contain;
+    }
+    
+    .vote {
+      background: linear-gradient(135deg, #ffcc00, #ff9900);
+      border: none;
+      padding: 6px 12px;
+      color: white;
+      border-radius: 999px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .vote:hover {
+      background: linear-gradient(135deg, #ffdd33, #ffbb00);
+    }
+    
+    .carousel p {
+      color: white;
+    }
+
+    nav {
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: Arial, Helvetica, sans-serif;
+      border-bottom: gray 1px solid;
+    }
+
+    nav a {
+      text-decoration: none !important;
+      color: #ff9900;
+      font-size: 18px;
+    }
+    
+    nav button {
+      background: linear-gradient(135deg, #ffcc00, #ff9900);
+      border: none;
+      padding: 12px 18px;
+      color: white;
+      border-radius: 999px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    nav a.router-link-exact-active {
+      font-weight: bold;
+    }
+    
+    </style>
+    

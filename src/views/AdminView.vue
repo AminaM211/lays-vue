@@ -1,9 +1,10 @@
 <template>
-  <nav>
-    <p>Admin panel</p>
-    <button @click="logout">Uitloggen</button>
-  </nav>
+    <nav>
+      <p to="/">Admin</p>
+      <button @click="logout">Uitloggen</button>
+    </nav>
 
+    <div class="body">
     <section class="card">
       <h2>Alle designs</h2>
 
@@ -17,7 +18,7 @@
             />
           </div>
 
-          <p class="made-by">Made by user</p>
+            <p class="made-by">Made by {{ user.name }}</p>
           <button class="trash" @click="deleteBag(bag._id)">
             <img src="../assets/trash-2.svg" alt="">
           </button>
@@ -25,6 +26,8 @@
       </div>
     </div>
     </section>
+    <p class="copyright">Lays 2025 - Design your Lays</p>
+  </div>
 </template>
 
 <script>
@@ -118,136 +121,193 @@ return {
 </script>
 
 <style scoped>
-.card {
-  min-height: 100vh;
-  padding: 40px;
-  font-family: Arial, Helvetica, sans-serif;
-  padding: 10px;
-  margin-bottom: 20px;
-}
+  .card {
+    /* min-height: 100vh; */
+    padding: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
 
-.scroll {
-    overflow-x: scroll;
-    padding-top: 50px;
-}
-
-h2 {
-  margin-bottom: 0px;
-  font-size: 22px;
-  color: #ff0000;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
-}
-
-.trash {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  right: 15px;
-  z-index: 999999;
-}
-
-.trash img {
-  width: 100%;
-  height: 20px !important;
-}
-
-.carousel {
-  display: flex;
-  gap: 20px;
-  overflow: visible;
-}
-
-.bag-card {
-  border-radius: 16px;
-  padding: 10px;
-  text-align: center;
-  min-width: 250px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: visible;
-}
-
-.bag-card {
-  position: relative;
-  border-radius: 20px;
-  overflow: visible; 
-
-}
-
-.bag-float {
-  position: absolute;
-  top: -40px; 
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 999;
-  pointer-events: none;
+  nav p {
+    text-decoration: none;
+    color: black;
+  }
   
-}
+  .scroll {
+      overflow-x: scroll;
+      padding-top: 50px;
+  }
+  
+  h2 {
+    margin-top: 20px;
+    font-size: 22px;
+    color: #e01414;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
+  
+  .trash {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 15px;
+    z-index: 999999;
+    background: linear-gradient(135deg, #ffcc00, #ff9900);
+    border: none;
+    color: white;
+    padding-top: 5px;
+    border-radius: 999px;
+  }
 
-.bag-card:hover .bag-float {
-  top: -60px;
-  transition: top 0.3s ease;
-}
+  .cta {
+    background: linear-gradient(135deg, #ffcc00, #ff9900);
+    border: none;
+    padding: 12px 18px;
+    color: white;
+    border-radius: 999px;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-/* iframe zelf */
-.bag-preview {
-  width: 180px;
-  height: 260px;
-  border: none;
-  background: transparent;
-  pointer-events: none;
-}
+  .body {
+      background-image: url('../assets/background.png');
+      background-size: cover;
+      background-repeat: repeat;  
+      border-radius: 20px;  
+    }
 
-/* tekst blijft onder */
-.made-by {
-  margin-top: 220px;
-  color: white;
-  font-weight: bold;
-}
+    .copyright {
+      text-align: center;
+      color: rgb(160, 160, 160);
+      margin-top: 25vh;
+      padding-bottom: 10px;
+      font-size: 12px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+  .cta:hover {
+    background: linear-gradient(135deg, #ffdd33, #ffbb00);
+  }
 
+  
+  .trash img {
+    width: 100%;
+    height: 20px !important;
+  }
+  
+  .carousel {
+    display: flex;
+    gap: 20px;
+    overflow: visible;
+  }
+  
+  .bag-card {
+    border-radius: 16px;
+    padding: 10px;
+    text-align: center;
+    min-width: 250px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: visible;
+  }
+  
+  .bag-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: visible; 
+  }
+  
+  .bag-float {
+    position: absolute;
+    top: -50px; 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    pointer-events: none;
+    
+  }
+  
+  .bag-card:hover .bag-float {
+    top: -60px;
+    transition: top 0.3s ease;
+  }
+  
+  /* iframe zelf */
+  .bag-preview {
+    width: 180px;
+    height: 260px;
+    border: none;
+    background: transparent;
+    pointer-events: none;
+  }
 
-.bag-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-}
+  .flex2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.carousel p {
-  color: white;
-}
+  .text {
+    font-size: 14px;
+    color: gray;
+    margin-top: -10px;
+    margin-bottom: 20px;
+  }
+  
+  /* tekst blijft onder */
+  .made-by {
+    margin-top: 200px;
+    color: white;
+    font-weight: bold;
+  }
+  
+  
+  .bag-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+  }
+  
+  .carousel p {
+    color: white;
+  }
 
+  nav {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    border-bottom: gray 1px solid;
+  }
 
-button {
-  background: linear-gradient(135deg, #ffcc00, #ff9900);
-  border: none;
-  padding: 10px;
-  border-radius: 999px;
-  font-weight: bold;
-  cursor: pointer;
-}
+  nav p {
+    text-decoration: none !important;
+    color: #ff9900;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  nav button {
+    background: linear-gradient(135deg, #ffcc00, #ff9900);
+    border: none;
+    padding: 12px 18px;
+    color: white;
+    border-radius: 999px;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-nav {
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  font-family: Arial, Helvetica, sans-serif;
-  border-bottom: gray 1px solid;
-}
-
-nav button {
-  padding: 0px 20px;
-  text-decoration: none;
-  color: black;
-}
-
-nav a.router-link-exact-active {
-  font-weight: bold;
-}
-
-</style>
+  nav a.router-link-exact-active {
+    font-weight: bold;
+  }
+  
+  </style>
+  
