@@ -5,6 +5,8 @@ import LoginView from "../views/LoginView.vue"
 import AdminView from "../views/AdminView.vue"
 import RegisterView from "../views/RegisterView.vue"
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const isAdmin = () => {
     const user = JSON.parse(localStorage.getItem("user"))
     return user && user.role === "admin"
@@ -38,7 +40,7 @@ const isAdmin = () => {
   router.beforeEach(async (to, from, next) => {
     if (to.path === "/login") return next()
   
-    const res = await fetch("http://localhost:4000/api/v1/bag/mine", {
+    const res = await fetch(`${API_URL}/bag/mine`, {
       credentials: "include"
     })
   

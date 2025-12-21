@@ -13,7 +13,7 @@
         <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
           <div class="bag-float">
             <iframe
-              :src="`http://localhost:5173/?preview=true&bagId=${bag._id}`"
+              :src="`https://lays-configurator-vert.vercel.app/?preview=true&bagId=${bag._id}`"
               class="bag-preview"
             />
           </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-const API_URL = "http://localhost:4000/api/v1"
+const API_URL = import.meta.env.VITE_API_URL
 const url = `${API_URL}/bag`
 export default {
   data() {
@@ -85,7 +85,7 @@ async deleteBag(bagId) {
     },
 
     goToConfigurator() {
-      window.location.href = "http://localhost:5173/"
+      window.location.href = "https://lays-configurator-vert.vercel.app/"
 },
 getBagBackground(bag) {
 // 1. custom background image (base64 of url)
