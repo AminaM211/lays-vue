@@ -37,15 +37,15 @@ const isAdmin = () => {
     ]
   })
  
-  router.beforeEach(async (to, from, next) => {
-    if (to.path === "/login") return next()
+  router.beforeEach((to, from, next) => {
+    const user = JSON.parse(localStorage.getItem("user"))
   
-    const res = await fetch(`${API_URL}/api/v1/bag/mine`, {
-      credentials: "include"
-    })
+    if (to.path !== "/login" && !user) {
+      next("/login")
+      return
+    }
   
-    if (res.ok) next()
-    else next("/login")
+    next()
   })
   
   
