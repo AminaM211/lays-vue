@@ -8,15 +8,14 @@
       <section class="card">
         <div class="flex2">
             <h2>My designs</h2>
-
           <p v-if="myBags.length < 5 && myBags.length > 0">
             <!-- <p v-if="myBags.length < 5 "> -->
             <button class="cta" @click="goToConfigurator">
-              Design je eigen chipszak!
+              Design your Lays!
             </button>
           </p>
         </div>
-         <p class="text">You can create up to 5 designs!</p>
+         <p class="text">Welcome {{ user?.name || 'Guest' }} <br> You can create up to 5 designs!</p>
          <div v-if="myBags.length === 0">
           <button class="cta" @click="goToConfigurator">
               Design je eigen chipszak!
@@ -61,7 +60,9 @@
                 <p>Made by {{ bag.user?.name || 'Unknown' }}</p>
               <div class="madeflex">
                 <span>{{ bag.votes || 0 }} 👍</span>
-                <button class="vote" @click="vote(bag._id)">vote</button>
+                <button class="vote" @click="vote(bag._id)">
+                {{ bag.hasVoted ? "unvote" : "vote" }}
+              </button>
               </div>
             </div>
           </div>
@@ -74,129 +75,107 @@
   
   <script>
   const API_URL = "http://localhost:4000/api/v1"
-  const url = `${API_URL}/bag`
-  export default {
-    data() {
-      return {
-        user: JSON.parse(localStorage.getItem("user")),
-        myBags: [],
-        allBags: []
+
+export default {
+  data() {
+    return {
+      user: JSON.parse(localStorage.getItem("user")),
+      myBags: [],
+      allBags: []
+    }
+  },
+
+  async mounted() {
+    await this.fetchMyBags()
+    await this.fetchAllBags()
+  },
+
+  methods: {
+    async fetchMyBags() {
+      const res = await fetch(`${API_URL}/bag/mine`, {
+        credentials: "include"
+      })
+      if (res.ok) this.myBags = await res.json()
+    },
+
+    async fetchAllBags() {
+      const res = await fetch(`${API_URL}/bag`, {
+        credentials: "include"
+      })
+      if (!res.ok) return
+
+      const bags = await res.json()
+
+      this.allBags = bags.map(bag => ({
+        ...bag,
+        votes: bag.votes || 0,
+        hasVoted: false
+      }))
+    },
+
+    async vote(bagId) {
+      const bag = this.allBags.find(b => b._id === bagId)
+      if (!bag) return
+
+      const res = await fetch(`${API_URL}/vote/${bagId}`, {
+        method: bag.hasVoted ? "DELETE" : "POST",
+        credentials: "include"
+      })
+
+      if (!res.ok) {
+        alert("Vote mislukt")
+        return
       }
+
+      bag.votes += bag.hasVoted ? -1 : 1
+      bag.hasVoted = !bag.hasVoted
     },
-  
-    async mounted() {
-      await this.fetchMyBags()
-      await this.fetchAllBags()
+
+    async deleteBag(bagId) {
+      const res = await fetch(`${API_URL}/bag/${bagId}`, {
+        method: "DELETE",
+        credentials: "include"
+      })
+
+      if (!res.ok) return
+
+      this.myBags = this.myBags.filter(b => b._id !== bagId)
+      this.allBags = this.allBags.filter(b => b._id !== bagId)
     },
-    methods: {
-      async fetchMyBags() {
-  const res = await fetch(`${API_URL}/bag/mine`, {
-    method: "GET",
-    credentials: "include"
-  })
 
-  if (!res.ok) {
-    console.error("fetchMyBags failed:", res.status)
-    return
-  }
+    logout() {
+      localStorage.removeItem("user")
+      this.$router.push("/login")
+    },
 
-  this.myBags = await res.json()
-},
-async deleteBag(bagId) {
-  const res = await fetch(`${API_URL}/bag/${bagId}`, {
-    method: "DELETE",
-    credentials: "include"
-  })
+    goToConfigurator() {
+      window.location.href = "http://localhost:5173/"
+    },
 
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "")
-    console.error("DELETE failed:", res.status, txt)
-    alert("Delete mislukt")
-    return
-  }
-
-  // ✅ meteen UI updaten
-  this.myBags = this.myBags.filter(b => b._id !== bagId)
-  this.allBags = this.allBags.filter(b => b._id !== bagId)
-}
-,
-  
-async fetchAllBags() {
-  const res = await fetch(`${API_URL}/bag`, {
-    method: "GET",
-    credentials: "include"
-  })
-
-  if (!res.ok) {
-    console.error("fetchAllBags failed:", res.status)
-    return
-  }
-
-  this.allBags = await res.json()
-}
-,
-  
-      async vote(bagId) {
-        const bag = this.allBags.find(b => b._id === bagId)
-        if (!bag) return
-
-        const res = await fetch(`http://localhost:4000/api/v1/vote/${bagId}`, {
-          method: bag.hasVoted ? "DELETE" : "POST",
-          credentials: "include"
-        })
-
-        if (!res.ok) {
-          alert(bag.hasVoted ? "Stem verwijderen mislukt" : "Je hebt al gestemd")
-          return
+    getBagBackground(bag) {
+      if (bag.backgroundImage) {
+        return {
+          backgroundImage: `url(${bag.backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center"
         }
-
-        bag.votes += bag.hasVoted ? -1 : 1
-        bag.hasVoted = !bag.hasVoted
       }
-      ,
-  
-      logout() {
-        localStorage.removeItem("user")
-        this.$router.push("/login")
-      },
-  
-      goToConfigurator() {
-        window.location.href = "http://localhost:5173/"
-},
-getBagBackground(bag) {
-  // 1. custom background image (base64 of url)
-  if (bag.backgroundImage) {
-    return {
-      backgroundImage: `url(${bag.backgroundImage})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center"
-    }
-  }
 
-  // 2. preset background (blue, red, green, ...)
-  if (bag.backgroundPreset) {
-    return {
-      backgroundImage: `url(${new URL(
-        `/src/assets/${bag.backgroundPreset}-bg.png`,
-        import.meta.url
-      ).href})`,      backgroundSize: "cover",
-      backgroundPosition: "center"
-    }
-  }
+      if (bag.backgroundPreset) {
+        return {
+          backgroundImage: `url(/src/assets/${bag.backgroundPreset}-bg.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }
+      }
 
-  // 3. fallback kleur
-  return {
-    backgroundColor: bag.backgroundColor || "#05060a"
+      return { backgroundColor: bag.backgroundColor || "#05060a" }
+    }
   }
 }
+</script>
 
-
-
-    }
-  }
-  </script>
-  
-  <style scoped>
+<style scoped>
     .card {
       /* min-height: 100vh; */
       padding: 40px;
