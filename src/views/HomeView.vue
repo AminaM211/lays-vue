@@ -132,7 +132,7 @@ export default {
       })
 
       if (!res.ok) {
-        alert("You've already voted 3 times!")
+        alert("You already voted on this bag")
         return
       }
 
