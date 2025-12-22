@@ -18,7 +18,7 @@
             />
           </div>
 
-            <p class="made-by">Made by {{ user.name }}</p>
+            <p class="made-by">Made by {{ bag.user?.name || 'Unknown' }}</p>
           <button class="trash" @click="deleteBag(bag._id)">
             <img src="../assets/trash-2.svg" alt="">
           </button>
