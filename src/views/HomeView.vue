@@ -61,8 +61,8 @@
               <div class="madeflex">
                 <span>{{ bag.votes || 0 }} 👍</span>
                 <button class="vote" @click="vote(bag._id)">
-                {{ bag.hasVoted ? "unvote" : "vote" }}
-              </button>
+                  {{ bag.hasVoted ? "unvote" : "vote" }}
+                </button>
               </div>
             </div>
           </div>

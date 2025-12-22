@@ -1,7 +1,9 @@
 <template>
     <div class="login-page">
+      <img src="/favico.ico" alt="">
+      <h1>Design your Lays!</h1>
       <div class="login-card">
-        <h1>Maak een account aan</h1>
+        <h2>Maak een account aan</h2>
         <input
           type="name"
           placeholder="Username"
@@ -79,23 +81,34 @@
   </script>
   
   <style scoped>
-      h1 {
+      h1, h2 {
         font-family: Arial, Helvetica, sans-serif;
     }
+
+    h1 {
+      color: #df1f27;
+      font-style: oblique;
+      font-variant: small-caps;
+    }
+
     .login-page {
-      min-height: 100vh;
-      background: #f0f2f5;
+      /* min-height: 100vh; */
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
+    }
+
+    img {
+      width: 120px;
+      margin-top: 10px;
     }
     
     .login-card {
       background: white;
-      padding: 32px;
+      padding: 20px;
       width: 360px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -122,6 +135,10 @@
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
+    }
+
+    p {
+      font-family: Arial, Helvetica, sans-serif;
     }
     
     .secondary:hover {

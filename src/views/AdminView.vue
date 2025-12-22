@@ -19,6 +19,7 @@
           </div>
 
             <p class="made-by">Made by {{ bag.user?.name || 'Unknown' }}</p>
+            <span>{{ bag.votes || 0 }} 👍</span>
           <button class="trash" @click="deleteBag(bag._id)">
             <img src="../assets/trash-2.svg" alt="">
           </button>

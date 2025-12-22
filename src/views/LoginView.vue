@@ -1,7 +1,9 @@
 <template>
     <div class="login-page">
+      <img src="/favico.ico" alt="">
+      <h1>Design your Lays!</h1>
       <div class="login-card">
-        <h1>Log in</h1>
+        <h2>Log in</h2>
         <input
           type="email"
           placeholder="E-mailadres"
@@ -90,24 +92,39 @@
   </script>
   
   <style scoped>
-    h1 {
+      h1, h2 {
         font-family: Arial, Helvetica, sans-serif;
     }
+
+    h1 {
+      color: #df1f27;
+      font-style: oblique;
+      font-variant: small-caps;
+    }
+
     .login-page {
-      min-height: 100vh;
+      /* min-height: 100vh; */
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
+    }
+
+    img {
+      width: 120px;
+      margin-top: 10px;
     }
     
     .login-card {
-      padding: 32px;
+      background: white;
+      padding: 20px;
       width: 360px;
       border-radius: 8px;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
+    
     
     input {
       padding: 14px;
@@ -151,6 +168,10 @@
       border-radius: 6px;
       cursor: pointer;
       text-decoration: none;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    p {
       font-family: Arial, Helvetica, sans-serif;
     }
     
