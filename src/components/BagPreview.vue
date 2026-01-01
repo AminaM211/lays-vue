@@ -82,7 +82,7 @@ export default {
       objLoader.load("/assets/chips-bag-obj/bag.obj", (object) => {
         bagMesh = object
         bagMesh.scale.set(0.5, 0.5, 0.6)
-        bagMesh.position.set(0, 1.5, 0)
+        bagMesh.position.set(0.5, 1.8, 0)
 
         scene.add(bagMesh)
 
