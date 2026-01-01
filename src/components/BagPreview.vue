@@ -8,61 +8,101 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js"
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js"
 import { onBeforeUnmount } from "vue"
 
+import { createBackTexture, updateBagTexture } from "../bagTexture.js"
+
+import laysLogo from "/assets/lays.png"
+import backImg1 from "/assets/back-img1.png"
+import backImg2 from "/assets/back-img2.png"
+
 export default {
   props: {
     bag: Object
   },
 
   mounted() {
-    // === SIZES ===
     const width = 200
     const height = 280
 
-    // === SCENE ===
+    // SCENE
     const scene = new THREE.Scene()
 
-    // === CAMERA (SUPER BELANGRIJK) ===
+    // CAMERA
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100)
     camera.position.set(0, 1.2, 3)
     camera.lookAt(0, 1.2, 0)
 
-    // === RENDERER ===
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true
-    })
+    // RENDERER (⚠️ sharp)
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
     renderer.setSize(width, height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.outputColorSpace = THREE.LinearSRGBColorSpace
     this.$refs.container.appendChild(renderer.domElement)
 
-    // === LIGHTS ===
+    // LIGHTS
     scene.add(new THREE.AmbientLight(0xffffff, 1.2))
     const dir = new THREE.DirectionalLight(0xffffff, 1)
     dir.position.set(2, 4, 3)
     scene.add(dir)
 
-    // === LOAD MODEL ===
-    const mtlLoader = new MTLLoader()
+    // IMAGES (identiek aan configurator)
+    const logoImg = new Image()
+    logoImg.src = laysLogo
+
+    const back1 = new Image()
+    const back2 = new Image()
+    back1.src = backImg1
+    back2.src = backImg2
+
+    const customImage = new Image()
+    let customImageLoaded = false
+
+    if (this.bag.image) {
+      customImage.src = this.bag.image
+      customImage.onload = () => {
+        customImageLoaded = true
+      }
+    }
+
+    // LOAD MODEL
     let bagMesh = null
     let rafId = null
 
+    const mtlLoader = new MTLLoader()
     mtlLoader.load("/assets/chips-bag-obj/bag.mtl", (materials) => {
       materials.preload()
 
       const objLoader = new OBJLoader()
       objLoader.setMaterials(materials)
 
+      objLoader.load("/assets/chips-bag-obj/bag.obj", () => {}, undefined, console.error)
+
       objLoader.load("/assets/chips-bag-obj/bag.obj", (object) => {
         bagMesh = object
-
-        // 🔥 DEZE 3 LIJNEN ZIJN CRUCIAAL
         bagMesh.scale.set(0.5, 0.5, 0.6)
-        bagMesh.position.set(0, 0.9, 0)
-        bagMesh.rotation.y = 0
+        bagMesh.position.set(0, 1.5, 0)
 
         scene.add(bagMesh)
 
-        // === RENDER LOOP ===
+        // CONFIG — exact zoals backend
+        const config = {
+          name: this.bag.name || "",
+          bagColor: this.bag.bagColor || "#d32b2b",
+          keyFlavours: this.bag.keyFlavours || [],
+          backgroundColor: this.bag.backgroundColor || "#05060a",
+          backgroundPreset: this.bag.backgroundPreset || ""
+        }
+
+        // 🔥 TEXTURES TOEPASSEN
+        createBackTexture(bagMesh, config, back1, back2)
+        updateBagTexture(
+          bagMesh,
+          config,
+          logoImg,
+          customImage,
+          customImageLoaded
+        )
+
+        // LOOP
         const animate = () => {
           // bagMesh.rotation.y += 0.005
           renderer.render(scene, camera)
@@ -72,13 +112,10 @@ export default {
       })
     })
 
-    // === CLEANUP ===
     onBeforeUnmount(() => {
       if (rafId) cancelAnimationFrame(rafId)
       renderer.dispose()
-      if (renderer.domElement?.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement)
-      }
+      renderer.domElement?.remove()
     })
   }
 }
