@@ -101,10 +101,8 @@ if (bag.backgroundImage) {
 // 2. preset background (blue, red, green, ...)
 if (bag.backgroundPreset) {
   return {
-    backgroundImage: `url(${new URL(
-      `/src/assets/${bag.backgroundPreset}-bg.png`,
-      import.meta.url
-    ).href})`,      backgroundSize: "cover",
+    backgroundImage: `url(/bg/${bag.backgroundPreset}-bg.png)`,    
+    backgroundSize: "cover",
     backgroundPosition: "center"
   }
 }
