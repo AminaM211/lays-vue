@@ -74,7 +74,7 @@ export default {
       objLoader.setMaterials(materials)
 
       objLoader.load("/assets/chips-bag-obj/bag.obj", (bagMesh) => {
-        bagMesh.scale.set(0.35, 0.35, 0.35)
+        bagMesh.scale.set(0.5, 0.5, 0.6)
         bagMesh.position.y = 0.9
         bagMesh.rotation.y = 0.6
 
