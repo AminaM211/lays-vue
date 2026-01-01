@@ -26,10 +26,11 @@
       <div class="carousel">
         <div class="bag-card" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
           <div class="bag-float">
-            <iframe
+            <!-- <iframe
               :src="`https://lays-configurator-vert.vercel.app/?preview=true&bagId=${bag._id}`"
               class="bag-preview"
-            />
+            /> -->
+            <BagPreview :bag="bag" />
           </div>
           <button class="trash" @click="deleteBag(bag._id)">
             <img src="/assets/trash-2.svg" alt="">
@@ -72,7 +73,8 @@
   </template>
   
   <script>
-  const API_URL = import.meta.env.VITE_API_BASE_URL
+  const API_URL = import.meta.env.VITE_API_BASE_URL;
+  import BagPreview from "../components/BagPreview.vue";
 
 export default {
   data() {
@@ -82,6 +84,9 @@ export default {
       allBags: []
     }
   },
+  components: {
+  BagPreview
+},
 
   async mounted() {
     if (!this.user) {
