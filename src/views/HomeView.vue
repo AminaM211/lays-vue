@@ -50,10 +50,10 @@
       <div class="carousel">
         <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
           <div class="bag-float">
-            <iframe
+            <!-- <iframe
               :src="`https://lays-configurator-vert.vercel.app/?preview=true&bagId=${bag._id}`"
               class="bag-preview"
-            />
+            /> -->
             </div>
 
             <div class="madeby">
