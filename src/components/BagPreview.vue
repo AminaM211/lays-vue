@@ -7,6 +7,7 @@ import * as THREE from "three"
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js"
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js"
 import { createBackTexture, updateBagTexture } from "../bagTexture.js"
+import { onBeforeUnmount } from "vue"
 
 import laysLogo from "/assets/lays.png"
 import backImg1 from "/assets/back-img1.png"
@@ -141,13 +142,14 @@ export default {
     })
 
     // === 9) CLEANUP (belangrijk bij Vue) ===
-    this.$once("hook:beforeUnmount", () => {
-      if (rafId) cancelAnimationFrame(rafId)
-      renderer.dispose()
-      if (renderer.domElement?.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement)
-      }
-    })
+    onBeforeUnmount(() => {
+  if (rafId) cancelAnimationFrame(rafId)
+  renderer.dispose()
+  if (renderer.domElement && renderer.domElement.parentNode) {
+    renderer.domElement.parentNode.removeChild(renderer.domElement)
+  }
+})
+
   }
 }
 </script>
