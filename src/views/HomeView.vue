@@ -170,7 +170,7 @@ export default {
 
       if (bag.backgroundPreset) {
         return {
-          backgroundImage: `url(@/assets/${bag.backgroundPreset}-bg.png)`,
+          backgroundImage: `url(/bg/${bag.backgroundPreset}-bg.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center"
         }
