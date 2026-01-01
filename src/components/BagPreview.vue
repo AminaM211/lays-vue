@@ -40,7 +40,10 @@ export default {
 
     // LIGHTS
     scene.add(new THREE.AmbientLight(0xffffff, 1.2))
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2))
+
     const dir = new THREE.DirectionalLight(0xffffff, 1)
+
     dir.position.set(2, 4, 3)
     scene.add(dir)
 
