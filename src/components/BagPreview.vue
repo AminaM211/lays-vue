@@ -64,7 +64,7 @@ export default {
 
         // === RENDER LOOP ===
         const animate = () => {
-          bagMesh.rotation.y += 0.005
+          // bagMesh.rotation.y += 0.005
           renderer.render(scene, camera)
           rafId = requestAnimationFrame(animate)
         }

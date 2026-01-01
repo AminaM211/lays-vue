@@ -302,7 +302,7 @@ export default {
       overflow: visible; 
     }
     
-    .bag-float {
+    /* .bag-float {
       position: absolute;
       top: -50px; 
       left: 50%;
@@ -310,7 +310,7 @@ export default {
       z-index: 999;
       pointer-events: none;
       
-    }
+    } */
     
     .bag-card:hover .bag-float {
       top: -70px;
