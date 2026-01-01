@@ -8,9 +8,9 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js"
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js"
 import { createBackTexture, updateBagTexture } from "../bagTexture.js"
 
-import laysLogo from "/assets/lays.png"
-import backImg1 from "/assets/back-img1.png"
-import backImg2 from "/assets/back-img2.png"
+import laysLogo from "./assets/lays.png"
+import backImg1 from "./assets/back-img1.png"
+import backImg2 from "./assets/back-img2.png"
 
 export default {
   props: {
