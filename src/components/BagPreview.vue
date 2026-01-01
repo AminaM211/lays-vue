@@ -28,7 +28,7 @@ export default {
 
     // CAMERA
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100)
-    camera.position.set(0, 1.8, 3)
+    camera.position.set(0, 3, 3)
     camera.lookAt(0, 1.2, 0)
 
     // RENDERER (⚠️ sharp)
