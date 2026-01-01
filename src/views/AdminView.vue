@@ -123,7 +123,6 @@ return {
 
 <style scoped>
   .card {
-    /* min-height: 100vh; */
     padding: 40px;
     font-family: Arial, Helvetica, sans-serif;
     padding: 10px;

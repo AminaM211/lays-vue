@@ -9,7 +9,6 @@
         <div class="flex2">
             <h2>My designs</h2>
           <p v-if="myBags.length < 5 && myBags.length > 0">
-            <!-- <p v-if="myBags.length < 5 "> -->
             <button class="cta" @click="goToConfigurator">
               Design your Lays!
             </button>
@@ -69,7 +68,6 @@
       </div>
     </div>
       </section>
-      <p class="copyright">Lays 2025 - Design your Lays</p>
     </div>
   </template>
   
@@ -172,7 +170,7 @@ export default {
 
       if (bag.backgroundPreset) {
         return {
-          backgroundImage: `url(/src/assets/${bag.backgroundPreset}-bg.png)`,
+          backgroundImage: `url(@/assets/${bag.backgroundPreset}-bg.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center"
         }
@@ -186,11 +184,9 @@ export default {
 
 <style scoped>
     .card {
-      /* min-height: 100vh; */
       padding: 40px;
       font-family: Arial, Helvetica, sans-serif;
       padding: 10px;
-      /* margin-bottom: 20px; */
     }
 
     router-link {
@@ -207,15 +203,6 @@ export default {
       margin: 0px;
       font-size: 22px;
       color: #d50e0e;
-    }
-
-    .copyright {
-      text-align: center;
-      color: rgb(160, 160, 160);
-      margin-top: 25vh;
-      padding-bottom: 10px;
-      font-size: 12px;
-      font-family: Arial, Helvetica, sans-serif;
     }
     
     .grid {
@@ -301,6 +288,7 @@ export default {
       background-repeat: repeat;  
       border-radius: 20px;  
       margin: 0;
+      height: 100vh;
     }
     
     .bag-card {
