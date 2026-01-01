@@ -101,7 +101,7 @@ export default {
 
         // ───────── ANIMATE
         const animate = () => {
-          bagMesh.position.y = 1.8 + Math.sin(Date.now() * 0.0017) * 0.06
+          // bagMesh.position.y = 1.8 + Math.sin(Date.now() * 0.0017) * 0.06
           renderer.render(scene, camera)
           requestAnimationFrame(animate)
           
