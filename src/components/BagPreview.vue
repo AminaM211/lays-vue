@@ -18,12 +18,15 @@ export default {
   },
 
   async mounted() {
-    // ───────── SCENE
     const scene = new THREE.Scene()
 
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100)
-    camera.position.set(0, 1.2, 2.8)
+    camera.fov = 55
+    camera.position.set(0, 1.2, 2)
+    camera.updateProjectionMatrix()
 
+
+    
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
@@ -31,12 +34,13 @@ export default {
     })
     renderer.setSize(160, 220)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+    THREE.ColorManagement.enabled = false
+    renderer.outputColorSpace = THREE.LinearSRGBColorSpace
     this.$refs.container.appendChild(renderer.domElement)
 
     scene.add(new THREE.AmbientLight(0xffffff, 1.3))
     scene.add(new THREE.DirectionalLight(0xffffff, 1))
 
-    // ───────── LOAD IMAGES
     const logoImg = new Image()
     logoImg.src = laysLogo
 
@@ -91,9 +95,10 @@ export default {
 
         // ───────── ANIMATE
         const animate = () => {
-          bagMesh.rotation.y += 0.003
+          bagMesh.position.y = 1.8 + Math.sin(Date.now() * 0.0017) * 0.06
           renderer.render(scene, camera)
           requestAnimationFrame(animate)
+          
         }
         animate()
       })
