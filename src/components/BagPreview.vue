@@ -37,8 +37,13 @@ export default {
       antialias: true,
       powerPreference: "low-power"
     })
-    renderer.setSize(160, 220)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+    
+    const width = 200
+    const height = 280
+
+    renderer.setSize(width, height, false)
+    renderer.setPixelRatio(window.devicePixelRatio)
+
     THREE.ColorManagement.enabled = false
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace
     this.$refs.container.appendChild(renderer.domElement)
