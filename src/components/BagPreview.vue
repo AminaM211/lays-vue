@@ -82,7 +82,7 @@ export default {
       objLoader.load("/assets/chips-bag-obj/bag.obj", (object) => {
         bagMesh = object
         bagMesh.scale.set(0.5, 0.5, 0.6)
-        bagMesh.position.set(0.5, 1.8, 0)
+        bagMesh.position.set(0.3, 2.4, 0)
 
         scene.add(bagMesh)
 
@@ -108,6 +108,7 @@ export default {
         // LOOP
         const animate = () => {
           // bagMesh.rotation.y += 0.005
+          bagMesh.position.y = 1.8 + Math.sin(Date.now() * 0.0017) * 0.06
           renderer.render(scene, camera)
           rafId = requestAnimationFrame(animate)
         }
