@@ -32,7 +32,7 @@
             />
           </div>
           <button class="trash" @click="deleteBag(bag._id)">
-            <img src="../assets/trash-2.svg" alt="">
+            <img src="/assets/trash-2.svg" alt="">
           </button>
         </div>
       </div>
@@ -283,7 +283,7 @@ export default {
     }
 
     .body {
-      background-image: url('../assets/background.png');
+      background-image: url('/assets/background.png');
       background-size: cover;
       background-repeat: repeat;  
       border-radius: 20px;  

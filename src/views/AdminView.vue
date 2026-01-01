@@ -21,7 +21,7 @@
             <p class="made-by">Made by {{ bag.user?.name || 'Unknown' }}</p>
             <span>{{ bag.votes || 0 }} 👍</span>
           <button class="trash" @click="deleteBag(bag._id)">
-            <img src="../assets/trash-2.svg" alt="">
+            <img src="/assets/trash-2.svg" alt="">
           </button>
         </div>
       </div>
@@ -175,7 +175,7 @@ return {
   }
 
   .body {
-      background-image: url('../assets/background.png');
+      background-image: url('/assets/background.png');
       background-size: cover;
       background-repeat: repeat;  
       border-radius: 20px;  
