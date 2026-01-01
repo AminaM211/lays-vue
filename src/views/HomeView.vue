@@ -54,6 +54,7 @@
               :src="`https://lays-configurator-vert.vercel.app/?preview=true&bagId=${bag._id}`"
               class="bag-preview"
             /> -->
+            <BagPreview :bag="bag" />
             </div>
 
             <div class="madeby">
