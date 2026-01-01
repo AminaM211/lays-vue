@@ -19,13 +19,18 @@ export default {
 
   async mounted() {
     const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(
+      window.innerWidth <= 800 ? 60 : 35,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      100
+    )
+    camera.position.set(0, 2, 4)
+    camera.lookAt(0, 1.8, 0)
 
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100)
     camera.fov = 55
     camera.position.set(0, 1.2, 2)
     camera.updateProjectionMatrix()
-
-
     
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -38,8 +43,9 @@ export default {
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace
     this.$refs.container.appendChild(renderer.domElement)
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.3))
     scene.add(new THREE.DirectionalLight(0xffffff, 1))
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2))
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2))
 
     const logoImg = new Image()
     logoImg.src = laysLogo
