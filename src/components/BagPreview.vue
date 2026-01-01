@@ -28,8 +28,8 @@ export default {
 
     // CAMERA
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100)
+    camera.position.set(0, 1.8, 3)
     camera.lookAt(0, 1, 0)
-     camera.position.set(0, 1.5, 2)
 
     // RENDERER (⚠️ sharp)
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
