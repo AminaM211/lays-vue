@@ -101,7 +101,7 @@ if (bag.backgroundImage) {
 // 2. preset background (blue, red, green, ...)
 if (bag.backgroundPreset) {
   return {
-    backgroundImage: `url(${bag.backgroundPreset}-bg.png)`,
+    backgroundImage: `url(assets/${bag.backgroundPreset}-bg.png)`,
     backgroundSize: "cover",
     backgroundPosition: "center"
   }
