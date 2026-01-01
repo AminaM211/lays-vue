@@ -25,9 +25,7 @@ export default {
       0.1,
       100
     )
-    camera.position.set(0, 2, 4)
     camera.lookAt(0, 1.8, 0)
-
     camera.fov = 55
     camera.position.set(0, 1.2, 2)
     camera.updateProjectionMatrix()
@@ -76,7 +74,7 @@ export default {
       objLoader.load("/assets/chips-bag-obj/bag.obj", (bagMesh) => {
         bagMesh.scale.set(0.5, 0.5, 0.6)
         bagMesh.position.y = 0.9
-        bagMesh.rotation.y = 0.6
+        bagMesh.rotation.y = 0.7
 
         scene.add(bagMesh)
 
