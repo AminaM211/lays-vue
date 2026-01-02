@@ -69,8 +69,9 @@
   import BagPreview from "../components/BagPreview.vue";
   import { io } from "socket.io-client"
   const socket = io(import.meta.env.VITE_API_BASE_URL, {
-  withCredentials: true
+  transports: ["websocket", "polling"]
 })
+
 
 export default {
   data() {
@@ -135,18 +136,17 @@ export default {
       }))
     },
     
-    vote(bagId) {
-  const bag = this.allBags.find(b => b._id === bagId)
-  if (!bag) return
+    vote(bag) {
+  bag.hasVoted = !bag.hasVoted
+  bag.votes += bag.hasVoted ? 1 : -1
 
   socket.emit("vote", {
-    bagId,
+    bagId: bag._id,
     userId: this.user._id,
-    action: bag.hasVoted ? "unvote" : "vote"
+    action: bag.hasVoted ? "vote" : "unvote"
   })
-
-  bag.hasVoted = !bag.hasVoted
 }
+
 ,
     async deleteBag(bagId) {
       const res = await fetch(`${API_URL}/api/v1/bag/${bagId}`, {
