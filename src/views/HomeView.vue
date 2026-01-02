@@ -69,8 +69,12 @@
   import BagPreview from "../components/BagPreview.vue";
   import { io } from "socket.io-client"
   const socket = io(import.meta.env.VITE_API_BASE_URL, {
-  transports: ["websocket", "polling"]
+  auth: {
+    userId: JSON.parse(localStorage.getItem("user"))?._id
+  },
+  transports: ["websocket"]
 })
+
 
 
 export default {
