@@ -22,18 +22,12 @@
           </div>
 
         <div v-if="myBags.length > 0">
-        <!-- <div> -->
         <div class="scroll">
       <div class="carousel">
         <div class="bag-card" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
           <!-- <div class="bag-card"> -->
           <div class="bag-float">
-            <!-- <iframe
-              :src="`https://lays-configurator-vert.vercel.app/?preview=true&bagId=${bag._id}`"
-              class="bag-preview"
-            /> -->
-            <!-- <BagPreview :bag="bag" /> -->
-             <BagPreviewTest :bag="bag"/>
+             <BagPreview :bag="bag"/>
           </div>
           <button class="trash" @click="deleteBag(bag._id)">
             <img src="/assets/trash-2.svg" alt="">
@@ -51,15 +45,11 @@
 
         <div class="scroll">
       <div class="carousel">
-        <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
+        <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)"> -->
+          <!-- <div class="bag-card"> -->
           <div class="bag-float">
-            <!-- <iframe
-              :src="`https://lays-configurator-vert.vercel.app/?preview=true&bagId=${bag._id}`"
-              class="bag-preview"
-            /> -->
             <BagPreview :bag="bag" />
             </div>
-
             <div class="madeby">
                 <p>Made by {{ bag.user?.name || 'Unknown' }}</p>
               <div class="madeflex">
@@ -79,7 +69,7 @@
   <script>
   const API_URL = import.meta.env.VITE_API_BASE_URL;
   import BagPreview from "../components/BagPreview.vue";
-  import BagPreviewTest from "../components/BagPreviewTest.vue";
+  // import BagPreviewTest from "../components/BagPreviewTest.vue";
 
 export default {
   data() {
@@ -90,8 +80,7 @@ export default {
     }
   },
   components: {
-  BagPreview,
-  BagPreviewTest
+  BagPreview
 },
 
   async mounted() {
@@ -246,8 +235,11 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 14px;
+      font-size: 0.9em;
       flex-direction: column;
+      position: absolute;
+      bottom: 10px;
+      width: 95%;
     }
 
     .madeflex {
@@ -269,6 +261,11 @@ export default {
       color: white;
       padding-top: 5px;
       border-radius: 999px;
+    }
+
+    span {
+      color: white;
+      font-weight: bold;
     }
 
     .cta {
@@ -302,7 +299,7 @@ export default {
       padding: 10px;
       text-align: center;
       min-width: 250px;
-      height: 240px;
+      height: 285px;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -323,6 +320,7 @@ export default {
       border-radius: 20px;
       overflow: visible; 
       background-color: #ffbb00;
+      box-shadow: inset 0px -50px 30px rgba(0, 0, 0, 0.2);
     }
     
     .bag-float {
@@ -359,14 +357,7 @@ export default {
       color: gray;
       margin-bottom: 20px;
     }
-    
-    /* tekst blijft onder */
-    .madeby {
-      margin-top: 170px;
-      color: white;
-      font-weight: bold;
-      gap: 0;
-    }
+  
 
     .madeby p {
       margin-bottom: 10px;
