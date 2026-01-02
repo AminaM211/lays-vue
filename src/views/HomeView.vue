@@ -149,7 +149,6 @@ export default {
     vote(bag) {
   socket.emit("vote", {
     bagId: bag._id,
-    userId: this.user._id,
     action: bag.hasVoted ? "unvote" : "vote"
   })
 
