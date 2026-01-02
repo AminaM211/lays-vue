@@ -24,8 +24,7 @@
         <div v-if="myBags.length > 0">
         <div class="scroll">
       <div class="carousel">
-        <div class="bag-card" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
-          <!-- <div class="bag-card"> -->
+        <div class="bag-card-my" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
           <div class="bag-float">
              <BagPreview :bag="bag"/>
           </div>
@@ -46,7 +45,6 @@
         <div class="scroll">
       <div class="carousel">
         <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
-          <!-- <div class="bag-card"> -->
           <div class="bag-float">
             <BagPreview :bag="bag" />
             </div>
@@ -54,8 +52,8 @@
                 <p>Made by {{ bag.user?.name || 'Unknown' }}</p>
               <div class="madeflex">
                 <span>{{ bag.votes || 0 }} 👍</span>
-                <button class="vote"  :disabled="bag.hasVoted" @click="vote(bag._id)">
-                  {{ bag.hasVoted ? "voted" : "vote" }}
+                <button class="vote" @click="vote(bag)">
+                  {{ bag.hasVoted ? "unvote" : "vote" }}
                 </button>
               </div>
             </div>
@@ -73,7 +71,6 @@
   const socket = io(import.meta.env.VITE_API_BASE_URL, {
   withCredentials: true
 })
-  // import BagPreviewTest from "../components/BagPreviewTest.vue";
 
 export default {
   data() {
@@ -111,23 +108,6 @@ export default {
   beforeUnmount() {
   socket.off("vote:update")
 },
-//   async mounted() {
-//   // LOCAL DEV: skip API calls
-//   if (import.meta.env.DEV) {
-//     console.log("DEV mode: skipping API fetches")
-//     return
-//   }
-
-//   if (!this.user) {
-//     this.$router.push("/login")
-//     return
-//   }
-
-//   await this.fetchMyBags()
-//   await this.fetchAllBags()
-// },
-
-
   methods: {
     async fetchMyBags() {
       const res = await fetch(`${API_URL}/api/v1/bag/mine`, {
@@ -154,39 +134,21 @@ export default {
         hasVoted: false
       }))
     },
-
-    // async vote(bagId) {
-    //   const bag = this.allBags.find(b => b._id === bagId)
-    //   if (!bag) return
-
-    //   const res = await fetch(`${API_URL}/api/v1/vote/${bagId}`, {
-    //     method: bag.hasVoted ? "DELETE" : "POST",
-    //     credentials: "include"
-    //   })
-
-    //   if (!res.ok) {
-    //     alert("You already voted on this bag")
-    //     return
-    //   }
-
-    //   bag.votes += bag.hasVoted ? -1 : 1
-    //   bag.hasVoted = !bag.hasVoted
-    // },
-
-    vote(bagId) {
-  const bag = this.allBags.find(b => b._id === bagId)
+    
+    vote(bag) {
   if (!bag) return
 
-  socket.emit("vote", {
-    bagId,
-    userId: this.user._id
-  })
-
+  // 1️⃣ optimistic update (UI voelt instant)
   bag.hasVoted = !bag.hasVoted
-}
+  bag.votes += bag.hasVoted ? 1 : -1
 
-,
-
+  // 2️⃣ server + socket
+  socket.emit("vote", {
+    bagId: bag._id,
+    userId: this.user._id,
+    action: bag.hasVoted ? "vote" : "unvote"
+  })
+},
     async deleteBag(bagId) {
       const res = await fetch(`${API_URL}/api/v1/bag/${bagId}`, {
         method: "DELETE",
@@ -274,6 +236,10 @@ export default {
       bottom: 10px;
       width: 95%;
     }
+    
+    .madeby p {
+      font-weight: bold;
+    }
 
     .madeflex {
       display: flex;
@@ -294,6 +260,11 @@ export default {
       color: white;
       padding-top: 5px;
       border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .trash:hover {
+      background: linear-gradient(135deg, #ffdd33, #ffbb00);
     }
 
     span {
@@ -333,6 +304,18 @@ export default {
       text-align: center;
       min-width: 250px;
       height: 285px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: visible;
+    }
+
+    .bag-card-my {
+      border-radius: 16px;
+      padding: 10px;
+      text-align: center;
+      min-width: 250px;
+      height: 240px;
       display: flex;
       flex-direction: column;
       position: relative;
