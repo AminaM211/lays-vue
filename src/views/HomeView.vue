@@ -135,20 +135,19 @@ export default {
       }))
     },
     
-    vote(bag) {
+    vote(bagId) {
+  const bag = this.allBags.find(b => b._id === bagId)
   if (!bag) return
 
-  // 1️⃣ optimistic update (UI voelt instant)
-  bag.hasVoted = !bag.hasVoted
-  bag.votes += bag.hasVoted ? 1 : -1
-
-  // 2️⃣ server + socket
   socket.emit("vote", {
-    bagId: bag._id,
+    bagId,
     userId: this.user._id,
-    action: bag.hasVoted ? "vote" : "unvote"
+    action: bag.hasVoted ? "unvote" : "vote"
   })
-},
+
+  bag.hasVoted = !bag.hasVoted
+}
+,
     async deleteBag(bagId) {
       const res = await fetch(`${API_URL}/api/v1/bag/${bagId}`, {
         method: "DELETE",
