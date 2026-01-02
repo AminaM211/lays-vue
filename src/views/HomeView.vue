@@ -45,7 +45,7 @@
 
         <div class="scroll">
       <div class="carousel">
-        <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)"> -->
+        <div class="bag-card" v-for="bag in allBags" :key="bag._id" :style="getBagBackground(bag)">
           <!-- <div class="bag-card"> -->
           <div class="bag-float">
             <BagPreview :bag="bag" />
@@ -54,8 +54,8 @@
                 <p>Made by {{ bag.user?.name || 'Unknown' }}</p>
               <div class="madeflex">
                 <span>{{ bag.votes || 0 }} 👍</span>
-                <button class="vote" @click="vote(bag._id)">
-                  {{ bag.hasVoted ? "unvote" : "vote" }}
+                <button class="vote"  :disabled="bag.hasVoted" @click="vote(bag._id)">
+                  {{ bag.hasVoted ? "voted" : "vote" }}
                 </button>
               </div>
             </div>
@@ -69,6 +69,10 @@
   <script>
   const API_URL = import.meta.env.VITE_API_BASE_URL;
   import BagPreview from "../components/BagPreview.vue";
+  import { io } from "socket.io-client"
+  const socket = io(import.meta.env.VITE_API_BASE_URL, {
+  withCredentials: true
+})
   // import BagPreviewTest from "../components/BagPreviewTest.vue";
 
 export default {
@@ -91,9 +95,24 @@ export default {
 
     await this.fetchMyBags()
     await this.fetchAllBags()
+
+    // SOCKET.IO SETUP
+    socket.on("connect", () => {
+      console.log("Connected to socket.io server")
+    })
+    socket.on("vote:update", ({ bagId, votes }) => {
+      const bag = this.allBags.find(b => b._id === bagId)
+      if (bag) {bag.votes = votes}
+      const mine = this.myBags.find(b => b._id === bagId)
+      if (mine) mine.votes = votes
+
+    })
   },
+  beforeUnmount() {
+  socket.off("vote:update")
+},
 //   async mounted() {
-//   // 🔥 LOCAL DEV: skip API calls
+//   // LOCAL DEV: skip API calls
 //   if (import.meta.env.DEV) {
 //     console.log("DEV mode: skipping API fetches")
 //     return
@@ -136,23 +155,37 @@ export default {
       }))
     },
 
-    async vote(bagId) {
-      const bag = this.allBags.find(b => b._id === bagId)
-      if (!bag) return
+    // async vote(bagId) {
+    //   const bag = this.allBags.find(b => b._id === bagId)
+    //   if (!bag) return
 
-      const res = await fetch(`${API_URL}/api/v1/vote/${bagId}`, {
-        method: bag.hasVoted ? "DELETE" : "POST",
-        credentials: "include"
-      })
+    //   const res = await fetch(`${API_URL}/api/v1/vote/${bagId}`, {
+    //     method: bag.hasVoted ? "DELETE" : "POST",
+    //     credentials: "include"
+    //   })
 
-      if (!res.ok) {
-        alert("You already voted on this bag")
-        return
-      }
+    //   if (!res.ok) {
+    //     alert("You already voted on this bag")
+    //     return
+    //   }
 
-      bag.votes += bag.hasVoted ? -1 : 1
-      bag.hasVoted = !bag.hasVoted
-    },
+    //   bag.votes += bag.hasVoted ? -1 : 1
+    //   bag.hasVoted = !bag.hasVoted
+    // },
+
+    vote(bagId) {
+  const bag = this.allBags.find(b => b._id === bagId)
+  if (!bag) return
+
+  socket.emit("vote", {
+    bagId,
+    userId: this.user._id
+  })
+
+  bag.hasVoted = !bag.hasVoted
+}
+
+,
 
     async deleteBag(bagId) {
       const res = await fetch(`${API_URL}/api/v1/bag/${bagId}`, {

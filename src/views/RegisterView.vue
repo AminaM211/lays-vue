@@ -69,7 +69,7 @@
             alert(data.message)
             return
           }
-          this.$router.push("/login")
+          this.$router.push("/")
   
         } catch (err) {
           console.error(err)
