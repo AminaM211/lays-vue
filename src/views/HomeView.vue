@@ -94,30 +94,30 @@ export default {
   BagPreviewTest
 },
 
-  // async mounted() {
-  //   if (!this.user) {
-  //   this.$router.push("/login")
-  //   return
-  // }
-
-  //   await this.fetchMyBags()
-  //   await this.fetchAllBags()
-  // },
   async mounted() {
-  // 🔥 LOCAL DEV: skip API calls
-  if (import.meta.env.DEV) {
-    console.log("DEV mode: skipping API fetches")
-    return
-  }
-
-  if (!this.user) {
+    if (!this.user) {
     this.$router.push("/login")
     return
   }
 
-  await this.fetchMyBags()
-  await this.fetchAllBags()
-},
+    await this.fetchMyBags()
+    await this.fetchAllBags()
+  },
+//   async mounted() {
+//   // 🔥 LOCAL DEV: skip API calls
+//   if (import.meta.env.DEV) {
+//     console.log("DEV mode: skipping API fetches")
+//     return
+//   }
+
+//   if (!this.user) {
+//     this.$router.push("/login")
+//     return
+//   }
+
+//   await this.fetchMyBags()
+//   await this.fetchAllBags()
+// },
 
 
   methods: {
