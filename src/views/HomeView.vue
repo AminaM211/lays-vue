@@ -98,13 +98,19 @@ export default {
     socket.on("connect", () => {
       console.log("Connected to socket.io server")
     })
-    socket.on("vote:update", ({ bagId, votes }) => {
-      const bag = this.allBags.find(b => b._id === bagId)
-      if (bag) {bag.votes = votes}
-      const mine = this.myBags.find(b => b._id === bagId)
-      if (mine) mine.votes = votes
+    socket.on("vote:update", ({ bagId, votes, voters }) => {
+  const userId = this.user._id
 
-    })
+  const bag = this.allBags.find(b => b._id === bagId)
+  if (bag) {
+    bag.votes = votes
+    bag.hasVoted = voters.includes(userId)
+  }
+
+  const mine = this.myBags.find(b => b._id === bagId)
+  if (mine) mine.votes = votes
+})
+
   },
   beforeUnmount() {
   socket.off("vote:update")

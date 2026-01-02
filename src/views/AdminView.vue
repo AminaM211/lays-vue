@@ -54,7 +54,14 @@ if (!res.ok) {
   return
 }
 
-this.allBags = await res.json()
+const bags = await res.json()
+  const userId = this.user._id
+
+  this.allBags = bags.map(bag => ({
+    ...bag,
+    votes: bag.votes || 0,
+    hasVoted: bag.voters?.includes(userId) || false
+  }))
 }
 ,
 
