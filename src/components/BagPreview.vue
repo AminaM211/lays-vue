@@ -28,7 +28,7 @@ export default {
 
     // CAMERA
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100)
-    camera.position.set(0, 1.8, 3)
+    camera.position.set(0, 1.5, 2.1)
     camera.lookAt(0, 1, 0)
 
     // RENDERER (⚠️ sharp)
@@ -81,8 +81,8 @@ export default {
 
       objLoader.load("/assets/chips-bag-obj/bag.obj", (object) => {
         bagMesh = object
-        bagMesh.scale.set(0.5, 0.5, 0.6)
-        bagMesh.position.set(0.3, 4, 0)
+        bag.scale.set(0.5, 0.5, 0.6)
+        bag.position.set(0, 0.9, 0)
 
         scene.add(bagMesh)
 

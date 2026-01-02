@@ -22,15 +22,18 @@
           </div>
 
         <div v-if="myBags.length > 0">
+        <!-- <div> -->
         <div class="scroll">
       <div class="carousel">
         <div class="bag-card" v-for="bag in myBags" :key="bag._id" :style="getBagBackground(bag)">
+          <!-- <div class="bag-card"> -->
           <div class="bag-float">
             <!-- <iframe
               :src="`https://lays-configurator-vert.vercel.app/?preview=true&bagId=${bag._id}`"
               class="bag-preview"
             /> -->
-            <BagPreview :bag="bag" />
+            <!-- <BagPreview :bag="bag" /> -->
+             <BagPreviewTest :bag="bag"/>
           </div>
           <button class="trash" @click="deleteBag(bag._id)">
             <img src="/assets/trash-2.svg" alt="">
@@ -76,6 +79,7 @@
   <script>
   const API_URL = import.meta.env.VITE_API_BASE_URL;
   import BagPreview from "../components/BagPreview.vue";
+  import BagPreviewTest from "../components/BagPreviewTest.vue";
 
 export default {
   data() {
@@ -86,18 +90,35 @@ export default {
     }
   },
   components: {
-  BagPreview
+  BagPreview,
+  BagPreviewTest
 },
 
+  // async mounted() {
+  //   if (!this.user) {
+  //   this.$router.push("/login")
+  //   return
+  // }
+
+  //   await this.fetchMyBags()
+  //   await this.fetchAllBags()
+  // },
   async mounted() {
-    if (!this.user) {
+  // 🔥 LOCAL DEV: skip API calls
+  if (import.meta.env.DEV) {
+    console.log("DEV mode: skipping API fetches")
+    return
+  }
+
+  if (!this.user) {
     this.$router.push("/login")
     return
   }
 
-    await this.fetchMyBags()
-    await this.fetchAllBags()
-  },
+  await this.fetchMyBags()
+  await this.fetchAllBags()
+},
+
 
   methods: {
     async fetchMyBags() {
@@ -301,17 +322,17 @@ export default {
       position: relative;
       border-radius: 20px;
       overflow: visible; 
+      background-color: #ffbb00;
     }
     
-    /* .bag-float {
+    .bag-float {
       position: absolute;
       top: -50px; 
       left: 50%;
       transform: translateX(-50%);
       z-index: 999;
       pointer-events: none;
-      
-    } */
+    }
     
     .bag-card:hover .bag-float {
       top: -70px;
