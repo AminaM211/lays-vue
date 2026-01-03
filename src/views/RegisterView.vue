@@ -8,7 +8,7 @@
       <img src="/favico.ico" alt="">
       <h1>Design your Lays!</h1>
       <div class="login-card">
-        <h2>Maak een account aan</h2>
+        <h2>Create an account</h2>
         <input
           type="text"
           placeholder="Username"
@@ -28,7 +28,7 @@
         />
   
         <button class="primary" @click="register" :disabled="loading">
-          Aanmelden
+          Register
         </button>
     
         <hr />
@@ -51,13 +51,13 @@ export default {
       email: "",
       password: "",
       loading: false,
-      loaderText: "Account aanmaken…"
+      loaderText: "Creating your account"
     }
   },
   methods: {
     async register() {
       this.loading = true
-      this.loaderText = "Account aanmaken…"
+      this.loaderText = "Creating your account"
 
       try {
         const res = await fetch(`${API_URL}/api/v1/user/register`, {
@@ -79,8 +79,8 @@ export default {
           return
         }
 
-        // Na registratie terug naar login
-        this.$router.push("/login")
+        // Na registratie terug naar home
+        this.$router.push("/")
 
       } catch (err) {
         console.error(err)
