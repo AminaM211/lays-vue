@@ -68,8 +68,9 @@
   const API_URL = import.meta.env.VITE_API_BASE_URL;
   import BagPreview from "../components/BagPreview.vue";
   import { io } from "socket.io-client"
+  
   const socket = io(import.meta.env.VITE_API_BASE_URL, {
-  transports: ["websocket"]
+  withCredentials: true
 })
 
 
@@ -146,11 +147,13 @@ export default {
     vote(bag) {
   socket.emit("vote", {
     bagId: bag._id,
+    userId: this.user.id,   // ⬅️ DIT TOEVOEGEN
     action: bag.hasVoted ? "unvote" : "vote"
   })
 
   bag.hasVoted = !bag.hasVoted
 }
+
 
 ,
     async deleteBag(bagId) {
