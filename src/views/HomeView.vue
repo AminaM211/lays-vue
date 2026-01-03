@@ -330,9 +330,8 @@ export default {
       background-image: url('/assets/background.png');
       background-size: cover;
       background-repeat: repeat;  
-      border-radius: 20px;  
       margin: 0;
-      height: 100vh;
+      height: 150vh;
     }
     
     .bag-card {
