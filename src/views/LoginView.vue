@@ -11,7 +11,7 @@
         <h2>Log in</h2>
         <input
           type="email"
-          placeholder="emailadress"
+          placeholder="Email address"
           v-model="email"
         />
   
@@ -88,11 +88,10 @@
     alert("Server error")
   } finally {
     this.loading = false
-}
-
-
+  }
     }
   }
+}
   </script>
   
   <style scoped>

@@ -10,20 +10,20 @@
       <div class="login-card">
         <h2>Maak een account aan</h2>
         <input
-          type="name"
+          type="text"
           placeholder="Username"
           v-model="name"
         />
 
         <input
           type="email"
-          placeholder="E-mailadres"
+          placeholder="Email address"
           v-model="email"
         />
   
         <input
           type="password"
-          placeholder="Wachtwoord"
+          placeholder="Password"
           v-model="password"
         />
   
