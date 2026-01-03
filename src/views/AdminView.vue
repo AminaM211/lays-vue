@@ -167,6 +167,11 @@ return {
     color: white;
     padding-top: 5px;
     border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .trash:hover {
+    background: linear-gradient(135deg, #ffdd33, #ffbb00);
   }
 
   .cta {
@@ -199,6 +204,10 @@ return {
     background: linear-gradient(135deg, #ffdd33, #ffbb00);
   }
 
+  span {
+    color: white;
+    font-weight: bold;
+  }
   
   .trash img {
     width: 100%;
@@ -268,7 +277,7 @@ return {
   
   /* tekst blijft onder */
   .made-by {
-    margin-top: 200px;
+    margin-top: 230px;
     color: white;
     font-weight: bold;
   }
