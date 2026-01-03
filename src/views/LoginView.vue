@@ -16,7 +16,8 @@
           v-model="password"
         />
   
-        <button class="primary" @click="login">
+        <button id="loader" class="primary" @click="login">
+          <div class="spinner"></div>
           Inloggen
         </button>
     
@@ -35,15 +36,34 @@
   <script>
   const API_URL = import.meta.env.VITE_API_BASE_URL
 
+  // ------------------------------
+  // LOADER
+  // ------------------------------
+  const loader = document.getElementById("loader")
+
+  function showLoader(text = "Loading…") {
+    if (!loader) return
+    loader.style.display = "flex"
+    loader.querySelector("p").innerText = text
+  }
+
+  function hideLoader() {
+    if (!loader) return
+    loader.style.display = "none"
+  }
+
   export default {
     data() {
       return {
-        email: "", // Initialize email
-        password: "" // Initialize password
+        email: "", 
+        password: "" 
       }
     },
     methods: {
         async login() {
+
+    showLoader("Logging in…")
+
   try {
     const res = await fetch(`${API_URL}/api/v1/user/login`, {
     method: "POST",
@@ -194,5 +214,32 @@
         gap: 6px;
         flex-direction: row;
     }
+
+
+    #loader {
+  position: fixed;
+  inset: 0;
+  background: #05060a45;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 9px solid rgba(255,255,255,0.5);
+  border-top: 10px solid #ffd700;
+  border-radius: 60%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
     

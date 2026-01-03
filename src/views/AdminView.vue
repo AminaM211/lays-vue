@@ -37,7 +37,9 @@ export default {
       allBags: []
     }
   },
-
+  components: {
+  BagPreview
+},
   async mounted() {
     await this.fetchAllBags()
   },
@@ -212,7 +214,7 @@ return {
     padding: 10px;
     text-align: center;
     min-width: 250px;
-    height: 220px;
+    height: 280px;
     display: flex;
     flex-direction: column;
     position: relative;
