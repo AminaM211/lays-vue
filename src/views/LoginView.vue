@@ -38,59 +38,60 @@
   </template>
   
   <script>
-  const API_URL = import.meta.env.VITE_API_BASE_URL
-
-  export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-      loading: false,
-      loaderText: "Logging in…"
-    }
-  },
-  methods: {
-    async login() {
-      this.loading = true
-      this.loaderText = "Logging in…"
-
-      try {
-        const res = await fetch(`${API_URL}/api/v1/user/login`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password
-          })
-        })
-
-        const data = await res.json()
-
-        if (!res.ok) {
-          alert(data.message)
-          return
+    const API_URL = import.meta.env.VITE_API_BASE_URL
+    
+    export default {
+      data() {
+        return {
+          email: "",
+          password: "",
+          loading: false,
+          loaderText: "Logging in…"
         }
-
-        localStorage.setItem("user", JSON.stringify(data.user))
-
-        this.$router.push(
-          data.user.role === "admin" ? "/admin" : "/"
-        )
-
-      } catch (err) {
-        console.error(err)
-        alert("Server error")
-      } finally {
-        this.loading = false
+      },
+      methods: {
+        async login() {
+          this.loading = true
+          this.loaderText = "Logging in…"
+    
+          try {
+            const res = await fetch(`${API_URL}/api/v1/user/login`, {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                email: this.email,
+                password: this.password
+              })
+            })
+    
+            const data = await res.json()
+    
+            if (!res.ok) {
+              alert(data.message)
+              return
+            }
+    
+            localStorage.setItem("user", JSON.stringify(data.user))
+    
+            this.$router.push(
+              data.user.role === "admin" ? "/admin" : "/"
+            )
+    
+          } catch (err) {
+            console.error(err)
+            alert("Server error")
+          } finally {
+            this.loading = false
+          }
+        }
       }
     }
-  }
-}
-  </script>
-  
+    </script>
+    
+
   <style scoped>
       h1, h2 {
         font-family: Arial, Helvetica, sans-serif;
