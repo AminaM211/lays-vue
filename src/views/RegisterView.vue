@@ -1,5 +1,10 @@
 <template>
     <div class="login-page">
+       <!-- LOADER -->
+    <div v-if="loading" id="loader">
+      <div class="spinner"></div>
+      <p>{{ loaderText }}</p>
+    </div>
       <img src="/favico.ico" alt="">
       <h1>Design your Lays!</h1>
       <div class="login-card">
@@ -22,7 +27,7 @@
           v-model="password"
         />
   
-        <button class="primary" @click="register">
+        <button class="primary" @click="register" :disabled="loading">
           Aanmelden
         </button>
     
@@ -38,47 +43,56 @@
   
   <script>
   const API_URL = import.meta.env.VITE_API_BASE_URL
-  const url = `${API_URL}/api/v1/user/register`
 
-  export default {
-    data() {
-      return {
-        name: "",
-        email: "",
-        password: ""
-      }
-    },
-    methods: {
-      async register() {
-        try {
-          const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-            body: JSON.stringify({
-              name: this.name,
-              email: this.email,
-              password: this.password
-            })
+export default {
+  data() {
+    return {
+      name: "",
+      email: "",
+      password: "",
+      loading: false,
+      loaderText: "Account aanmaken…"
+    }
+  },
+  methods: {
+    async register() {
+      this.loading = true
+      this.loaderText = "Account aanmaken…"
+
+      try {
+        const res = await fetch(`${API_URL}/api/v1/user/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: this.name,
+            email: this.email,
+            password: this.password
           })
-  
-          const data = await res.json()
-  
-          if (!res.ok) {
-            alert(data.message)
-            return
-          }
-          this.$router.push("/")
-  
-        } catch (err) {
-          console.error(err)
-          alert("Server error")
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+          alert(data.message)
+          return
         }
+
+        // Na registratie terug naar login
+        this.$router.push("/login")
+
+      } catch (err) {
+        console.error(err)
+        alert("Server error")
+      } finally {
+        this.loading = false
       }
     }
   }
-  </script>
+}
+
+</script>
   
   <style scoped>
       h1, h2 {
@@ -136,6 +150,38 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    #loader {
+  position: fixed;
+  inset: 0;
+  background: #05060a45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+#loader p {
+  margin-left: 12px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 9px solid rgba(255,255,255,0.5);
+  border-top: 10px solid #ffd700;
+  border-radius: 60%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 
     p {
       font-family: Arial, Helvetica, sans-serif;

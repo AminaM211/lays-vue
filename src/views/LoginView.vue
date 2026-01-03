@@ -1,8 +1,9 @@
 <template>
     <div class="login-page">
-      <div id="loader">
+        <!-- LOADER -->
+    <div v-if="loading" id="loader">
       <div class="spinner"></div>
-      <p>Logging you in... </p>
+      <p>{{ loaderText }}</p>
     </div>
       <img src="/favico.ico" alt="">
       <h1>Design your Lays!</h1>
@@ -20,7 +21,7 @@
           v-model="password"
         />
   
-        <button class="primary" @click="login">
+        <button class="primary" @click="login" :disabled="loading">
           Log in
         </button>
     
@@ -39,33 +40,20 @@
   <script>
   const API_URL = import.meta.env.VITE_API_BASE_URL
 
-  // ------------------------------
-  // LOADER
-  // ------------------------------
-  const loader = document.getElementById("loader")
-
-  function showLoader(text = "Loading…") {
-    if (!loader) return
-    loader.style.display = "flex"
-    loader.querySelector("p").innerText = text
-  }
-
-  function hideLoader() {
-    if (!loader) return
-    loader.style.display = "none"
-  }
-
   export default {
     data() {
       return {
         email: "", 
-        password: "" 
+        password: "",
+        loading: false,       
+      loaderText: "Logging in…"
       }
     },
     methods: {
-        async login() {
+    async login() {
 
-    showLoader("Logging in…")
+      this.loading = true
+      this.loaderText = "Logging in…"
 
   try {
     const res = await fetch(`${API_URL}/api/v1/user/login`, {
@@ -91,22 +79,15 @@
 
     if (data.user.role === "admin") {
       this.$router.push("/admin")
-      hideLoader()
     } else {
       this.$router.push("/")
-      hideLoader()
     }
-
-    // Admin cannot access the home page
-    if (data.user.role !== "admin" && this.$route.path === "/admin") {
-      this.$router.push("/");
-    }
-
 
   } catch (err) {
     console.error(err)
     alert("Server error")
-  }
+  } finally {
+    this.loading = false
 }
 
 
@@ -233,9 +214,15 @@
   font-family: Arial, sans-serif;
 }
 
+#loader p {
+  margin-left: 12px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
 .spinner {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   border: 9px solid rgba(255,255,255,0.5);
   border-top: 10px solid #ffd700;
   border-radius: 60%;
