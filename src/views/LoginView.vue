@@ -1,32 +1,35 @@
 <template>
     <div class="login-page">
+      <div id="loader">
+      <div class="spinner"></div>
+      <p>Logging you in... </p>
+    </div>
       <img src="/favico.ico" alt="">
       <h1>Design your Lays!</h1>
       <div class="login-card">
         <h2>Log in</h2>
         <input
           type="email"
-          placeholder="E-mailadres"
+          placeholder="emailadress"
           v-model="email"
         />
   
         <input
           type="password"
-          placeholder="Wachtwoord"
+          placeholder="Password"
           v-model="password"
         />
   
-        <button id="loader" class="primary" @click="login">
-          <div class="spinner"></div>
-          Inloggen
+        <button class="primary" @click="login">
+          Log in
         </button>
     
         <hr />
   
         <div class="flex">
-            <p>Nog geen account?</p>
+            <p>not registered yet?</p>
             <router-link to="/register" class="secondary">
-              Account maken
+              Create an account
             </router-link>
         </div>
       </div>
@@ -88,15 +91,16 @@
 
     if (data.user.role === "admin") {
       this.$router.push("/admin")
+      hideLoader()
     } else {
       this.$router.push("/")
+      hideLoader()
     }
 
     // Admin cannot access the home page
     if (data.user.role !== "admin" && this.$route.path === "/admin") {
       this.$router.push("/");
     }
-
 
 
   } catch (err) {
